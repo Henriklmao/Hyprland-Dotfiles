@@ -113,43 +113,12 @@ return {
 
   -- for typescript, LazyVim also includes extra specs to properly setup lspconfig,
   -- treesitter, mason and typescript.nvim. So instead of the above, you can use:
-  { import = "lazyvim.plugins.extras.lang.typescript" },
+  -- { import = "lazyvim.plugins.extras.lang.typescript" },  -- Removed (Treesitter dependency)
 
-  -- add more treesitter parsers
+  -- Treesitter mit Assembly + Performance-Optimierung
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        "bash",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "query",
-        "regex",
-        "tsx",
-        "typescript",
-        "vim",
-        "yaml",
-      },
-    },
-  },
-
-  -- since `vim.tbl_deep_extend`, can only merge tables and not lists, the code above
-  -- would overwrite `ensure_installed` with the new value.
-  -- If you'd rather extend the default config, use the code below instead:
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      -- add tsx and treesitter
-      vim.list_extend(opts.ensure_installed, {
-        "tsx",
-        "typescript",
-      })
-    end,
+    enabled = false,
   },
 
   -- the opts function can also be used to change the default opts:
@@ -179,8 +148,22 @@ return {
   -- use mini.starter instead of alpha
   { import = "lazyvim.plugins.extras.ui.mini-starter" },
 
+  -- Markdown rendering mit tectonic für LaTeX
+  {
+    "MeanderingPaths/render-markdown.nvim",
+    opts = {
+      file_types = { "markdown", "norg", "rmd", "org" },
+      latex = {
+        enabled = true,
+        converter = "tectonic",
+        top_pad = 0,
+        bottom_pad = 0,
+      },
+    },
+  },
+
   -- add jsonls and schemastore packages, and setup treesitter for json, json5 and jsonc
-  { import = "lazyvim.plugins.extras.lang.json" },
+  -- { import = "lazyvim.plugins.extras.lang.json" },  -- Removed (Treesitter dependency)
 
   -- add any tools you want to have installed below
   {
