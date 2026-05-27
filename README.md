@@ -7,7 +7,7 @@ This is my personal Neovim configuration based on [LazyVim](https://www.lazyvim.
 To clone only this specific branch, use:
 
 ```bash
-git clone --branch nvim https://github.com/Henriklmao/Dotfiles.git
+git clone --branch nvim git@github.com:Henriklmao/Hyprland-Dotfiles.git
 ```
 
 The Hyprland configuration is located in the `master` branch.
@@ -15,5 +15,5 @@ The Hyprland configuration is located in the `master` branch.
 ## Installation
 
 ```bash
-git clone --branch nvim https://github.com/Henriklmao/Dotfiles.git ~/.config/nvim
+git clone --branch nvim git@github.com:Henriklmao/Hyprland-Dotfiles.git ~/.config/nvim
 ```
