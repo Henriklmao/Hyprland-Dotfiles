@@ -1,16 +1,22 @@
-# 💤 LazyVim
+# My Hyprland Dotfiles (Master Branch)
 
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
+This is my personal Hyprland configuration (Lua-based) and the configuration for `nwg-dock-hyprland`.
 
-`````bash
-git clone <https://github.com/neovim/neovim.git>
-cd neovim
-make CMAKE_BUILD_TYPE=Release
-make install
+## Features
+- Fully configured in Lua (`hyprland.lua`).
+- Modular structure in the `lua/` subfolder.
+- Optimized for Surface Go 2 (1920x1280, Scale 1.25).
+- Integration with `nwg-dock-hyprland`.
 
-git clone -b master https://github.com/Henriklmao/Neovim-Dotfiles.git
-mv Neovim-Dotfiles/* ~/.config/nvim
+## Installation
+Clone the repository and run the installation script:
+
+```bash
+git clone https://github.com/Henriklmao/Dotfiles.git ~/Documents/Dotfiles
+cd ~/Documents/Dotfiles
+chmod +x install.sh
+./install.sh
 ```
-````thub.io/installation) to get started.
-`````
+
+## Neovim
+My Neovim configuration can be found in the [nvim branch](https://github.com/Henriklmao/Dotfiles/tree/nvim).
