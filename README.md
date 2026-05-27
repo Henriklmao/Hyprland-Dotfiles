@@ -1,16 +1,19 @@
-# 💤 LazyVim
+# Neovim Dotfiles (NVIM Branch)
 
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
+This is my personal Neovim configuration based on [LazyVim](https://www.lazyvim.org/).
 
-`````bash
-git clone <https://github.com/neovim/neovim.git>
-cd neovim
-make CMAKE_BUILD_TYPE=Release
-make install
+## Cloning this branch
 
-git clone -b master https://github.com/Henriklmao/Neovim-Dotfiles.git
-mv Neovim-Dotfiles/* ~/.config/nvim
+To clone only this specific branch, use:
+
+```bash
+git clone --branch nvim https://github.com/Henriklmao/Dotfiles.git
 ```
-````thub.io/installation) to get started.
-`````
+
+The Hyprland configuration is located in the `master` branch.
+
+## Installation
+
+```bash
+git clone --branch nvim https://github.com/Henriklmao/Dotfiles.git ~/.config/nvim
+```
