@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Dotfiles Installation Script
-# Master Branch: Hyprland & nwg-dock-hyprland
+# Master Branch: Full Desktop Config (Hyprland, Waybar, Rofi, Kitty, etc.)
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -12,8 +12,8 @@ link_config() {
     
     if [ -e "$dest" ]; then
         if [ -L "$dest" ]; then
-            echo "Symlink for $dest already exists. Skipping."
-            return
+            echo "Removing existing symlink for $dest"
+            rm "$dest"
         else
             echo "Backing up existing $dest to ${dest}.bak"
             mv "$dest" "${dest}.bak"
@@ -27,10 +27,24 @@ link_config() {
 # Create .config if it doesn't exist
 mkdir -p ~/.config
 
-# Link Hyprland
-link_config "$DOTFILES_DIR/hypr" "$HOME/.config/hypr"
+# List of configs to link
+configs=(
+    "hypr"
+    "nwg-dock-hyprland"
+    "waybar"
+    "rofi"
+    "swaync"
+    "wlogout"
+    "kitty"
+    "fastfetch"
+)
 
-# Link nwg-dock-hyprland
-link_config "$DOTFILES_DIR/nwg-dock-hyprland" "$HOME/.config/nwg-dock-hyprland"
+# Link directories
+for config in "${configs[@]}"; do
+    link_config "$DOTFILES_DIR/$config" "$HOME/.config/$config"
+done
+
+# Link individual files
+link_config "$DOTFILES_DIR/starship.toml" "$HOME/.config/starship.toml"
 
 echo "Installation complete!"

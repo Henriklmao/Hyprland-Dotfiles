@@ -11,6 +11,9 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("~/.config/hypr/scripts/cleanup.sh")
     hl.exec_cmd("~/.config/com.ml4w.hyprlandsettings/hyprctl.sh")
+
+    -- Ensure QuickShell runs with the user's profile so Super+Esc targets the correct instance
+    hl.exec_cmd("qs -p ~/.config/quickshell")
     
     -- From HenrikHyprkey_Standard.conf
     hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")

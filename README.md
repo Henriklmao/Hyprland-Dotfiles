@@ -1,20 +1,25 @@
 # My Hyprland Dotfiles (Master Branch)
 
-This is my personal Hyprland configuration (Lua-based) and the configuration for `nwg-dock-hyprland`.
+This is my personal Hyprland configuration (Lua-based), `nwg-dock-hyprland` configuration, and various other desktop utilities.
 
 ## Features
 
-- Fully configured in Lua (`hyprland.lua`).
-- Modular structure in the `lua/` subfolder.
-- monitors.lua Optimized for Surface Go 2 (1920x1280, Scale 1.25).
-- Integration with `nwg-dock-hyprland`.
+- **Hyprland:** Fully configured in Lua (`hyprland.lua`). Modular structure in the `lua/` subfolder. Optimized for Surface Go 2 (1920x1280, Scale 1.25).
+- **Nwg-Dock:** Configuration for `nwg-dock-hyprland`.
+- **Waybar:** Configuration for the status bar.
+- **Rofi:** Configuration for the application launcher.
+- **SwayNC:** Configuration for the notification center.
+- **wlogout:** Configuration for the logout menu.
+- **Kitty:** Configuration for the terminal emulator.
+- **Fastfetch:** Configuration for system information fetching.
+- **Starship:** Configuration for the shell prompt.
 
 ## Installation
 
 Clone the repository and run the installation script:
 
 ```bash
-git clone git@github.com:Henriklmao/Hyprland-Dotfiles.git ~/Documents/Dotfiles
+git clone https://github.com/Henriklmao/Hyprland-Dotfiles.git ~/Documents/Dotfiles
 cd ~/Documents/Dotfiles
 chmod +x install.sh
 ./install.sh
@@ -22,11 +27,14 @@ chmod +x install.sh
 
 ## Neovim
 
-My Neovim configuration can be found in the [nvim branch](https://github.com/Henriklmao/Hyprland-Dotfiles/tree/nvim).
-Neovim server configuration for vps can be found in [server branch](https://github.com/Henriklmao/Hyprland-Dotfiles/tree/server).
+My Neovim configuration can be found in the [nvim branch](https://github.com/Henriklmao/Dotfiles/tree/nvim).
 
-Quick install nvim:
+## VPS Configurations
+
+My VPS configurations are located in the [server branch](https://github.com/Henriklmao/Dotfiles/tree/server).
+
+## Quick Install Neovim
 
 ```bash
-git clone --branch nvim git@github.com:Henriklmao/Hyprland-Dotfiles.git ~/.config/nvim
+git clone --branch nvim https://github.com/Henriklmao/Hyprland-Dotfiles.git ~/.config/nvim
 ```
