@@ -18,7 +18,6 @@ require("lua.monitors")
 -- Rules & Custom
 require("lua.windows")
 require("lua.ml4w")
-
 -- Keybindings
 require("lua.keybindings")
 
@@ -27,5 +26,6 @@ require("lua.autostart")
 
 -- Start command (Global environment update)
 hl.on("hyprland.start", function()
-    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+	hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+	hl.exec_cmd("xdg-user-dirs-update")
 end)
