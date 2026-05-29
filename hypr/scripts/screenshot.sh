@@ -30,6 +30,20 @@ NOTIFICATION_ICON="camera-photo-symbolic"
 # Screenshot Editor
 export GRIMBLAST_EDITOR="$(cat ~/.config/ml4w/settings/screenshot-editor)"
 
+copy_to_clipboard() {
+    if command -v wl-copy >/dev/null 2>&1; then
+        wl-copy -t image/png < "$1"
+    else
+        notify_user \
+            --a "${APP_NAME}" \
+            --i "${NOTIFICATION_ICON}" \
+            --s "wl-copy is not installed" \
+            --m "Screenshot was saved, but could not be copied to the clipboard." \
+            --t 2000
+        return 1
+    fi
+}
+
 # Example for keybindings
 # bind = SUPER, p, exec, grimblast save active
 # bind = SUPER SHIFT, p, exec, grimblast save area
@@ -38,19 +52,34 @@ export GRIMBLAST_EDITOR="$(cat ~/.config/ml4w/settings/screenshot-editor)"
 
 # Quick instant mode: full screen
 take_instant_full() {
-    grim "$NAME" && notify_user \
+    local target="$HOME/$NAME"
+
+    grim "$target" || return 1
+
+    if [[ -d "$screenshot_folder" && -w "$screenshot_folder" ]]; then
+        mv "$target" "$screenshot_folder/"
+        target="$screenshot_folder/$NAME"
+    fi
+
+    notify_user \
         --a "${APP_NAME}" \
         --i "${NOTIFICATION_ICON}" \
         --s "Screenshot saved" \
-        --m "$screenshot_folder/$NAME" \
+        --m "$target" \
         --t 1000
 
-    [[ -f "$HOME/$NAME" && -d "$screenshot_folder" && -w "$screenshot_folder" ]] && mv "$HOME/$NAME" "$screenshot_folder/"
+    copy_to_clipboard "$target" && notify_user \
+        --a "${APP_NAME}" \
+        --i "${NOTIFICATION_ICON}" \
+        --s "Screenshot copied" \
+        --m "Image is now in your clipboard." \
+        --t 1000
 }
 
 # Quick instant mode: area selection
 take_instant_area() {
     local pid_picker region
+    local target="$HOME/$NAME"
 
     # freeze screen for region selection
     hyprpicker -r -z &
@@ -67,13 +96,26 @@ take_instant_area() {
     trap - EXIT
 
     # capture and notify
-    grim -g "$region" "$NAME" && notify_user \
+    grim -g "$region" "$target" || return 1
+
+    if [[ -d "$screenshot_folder" && -w "$screenshot_folder" ]]; then
+        mv "$target" "$screenshot_folder/"
+        target="$screenshot_folder/$NAME"
+    fi
+
+    notify_user \
         --a "${APP_NAME}" \
         --i "${NOTIFICATION_ICON}" \
         --s "Screenshot saved" \
-        --m "$screenshot_folder/$NAME" \
+        --m "$target" \
         --t 1000
-    [[ -f "$HOME/$NAME" && -d "$screenshot_folder" && -w "$screenshot_folder" ]] && mv "$HOME/$NAME" "$screenshot_folder/"
+
+    copy_to_clipboard "$target" && notify_user \
+        --a "${APP_NAME}" \
+        --i "${NOTIFICATION_ICON}" \
+        --s "Screenshot copied" \
+        --m "Image is now in your clipboard." \
+        --t 1000
 }
 
 # Handle instant flags
