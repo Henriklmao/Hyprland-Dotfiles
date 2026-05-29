@@ -2,7 +2,7 @@
 local mainMod = "SUPER"
 
 -- Basic Actions
-hl.bind(mainMod .. " + W", hl.dsp.window.kill())
+hl.bind(mainMod .. " + W", hl.dsp.window.close())
 hl.bind("CTRL + ALT + DELETE", hl.dsp.exec_cmd("pkill -9 hyprland"))
 
 -- UI Toggles
@@ -75,8 +75,8 @@ hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
 
 -- Screenshots
-hl.bind("Print", hl.dsp.exec_cmd("hyprshot -m output"))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd("hyprshot -m region"))
+hl.bind("Print", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh --instant-area"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh --instant"))
 
 -- Zoom
 hl.bind(mainMod .. " + CTRL + plus", hl.dsp.exec_cmd("~/.config/hypr/scripts/zoom.sh in"), { repeating = true })
