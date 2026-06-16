@@ -35,6 +35,10 @@ function fritz
         sudo wg-quick up fritz
     end
 end
+function vi
+    set session_name (basename (pwd))
+    tmux new-session -A -c (pwd) -s "$session_name" nvim -c Explore
+end
 
 # Created by `pipx` on 2026-03-31 14:21:26
 set PATH $PATH /home/henrik/.local/bin
