@@ -6,12 +6,9 @@
 #         without any warranty.
 #         Copyright 2012— Gregory Pakosz (@gpakosz).
 
+set -g default-shell /usr/bin/fish
 
-
-# -- terminal settings ---------------------------------------------------------
-set -g default-terminal "tmux-256color"
-set -ag terminal-overrides ",xterm-256color:RGB"
-
+# -- bindings ------------------------------------------------------------------
 
 # preserve tmux stock bindings,
 # while adding bindings that don't conflict with these stock bindings
