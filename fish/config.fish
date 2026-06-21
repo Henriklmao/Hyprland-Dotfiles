@@ -16,6 +16,9 @@ if status is-interactive
     # Servers
     alias indigo="ssh root@87.106.191.54"
     alias vps="ssh root@217.154.224.224"
+    alias t="tmux"
+    alias tls="tmux ls"
+    alias ta="tmux a"
     # Bun
     set -x BUN_INSTALL "$HOME/.bun"
     set -x PATH "$BUN_INSTALL/bin:$PATH"
