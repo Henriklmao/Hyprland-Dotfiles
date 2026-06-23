@@ -35,6 +35,7 @@ COMPONENTS=(
   "starship|$DOTFILES_SRC/starship.toml|$HOME/.config/starship.toml"
   "tmux|$DOTFILES_SRC/tmux|$HOME/.config/tmux"
   "fish|$DOTFILES_SRC/fish|$HOME/.config/fish"
+  "qutebrowser|$DOTFILES_SRC/qutebrowser|$HOME/.config/qutebrowser"
   "quickshell|$DOTFILES_SRC/quickshell|$HOME/.config/quickshell"
 )
 
