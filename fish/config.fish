@@ -1,5 +1,6 @@
 if status is-interactive
     # Commands to run in interactive sessions can go here
+    set -g fish_greeting ""
     set -x EDITOR nvim
     alias vi="nvim"
     alias vim="nvim"
@@ -24,7 +25,7 @@ if status is-interactive
     set -x PATH "$BUN_INSTALL/bin:$PATH"
     # Cargo
     set -gx PATH $HOME/.cargo/bin $PATH
-
+    fastfetch
 end
 
 # FRITZ!Box WireGuard Toggle

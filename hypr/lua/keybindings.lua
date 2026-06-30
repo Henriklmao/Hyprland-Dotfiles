@@ -85,6 +85,7 @@ hl.bind(mainMod .. " + CTRL + minus", hl.dsp.exec_cmd("~/.config/hypr/scripts/zo
 -- App Launchers
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("kitty btop"))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("~/.config/ml4w/settings/terminal.sh"))
+hl.bind("ALT + SHIFT + T", hl.dsp.exec_cmd("kitty tmux"))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.exec_cmd("nautilus"))
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("qutebrowser"))
 hl.bind(mainMod .. " + SHIFT + ALT + B", hl.dsp.exec_cmd("qutebrowser :open -p"))

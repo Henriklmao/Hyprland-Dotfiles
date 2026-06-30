@@ -14,14 +14,11 @@ import os
 ## Vaultwarden ##
 
 os.environ["BW_HOST"] = "https://vw.henrikb.site"
-# Methode 1: Automatisches Ausfüllen (für 90% der Webseiten)
-# Methode 1: Automatisches Ausfüllen (Normal & Insert)
 config.bind("<Alt+p>", "spawn --userscript qute-bitwarden", mode="normal")
 config.bind(
     "<Alt+p>", "spawn --userscript qute-bitwarden ;; mode-enter normal", mode="insert"
 )
 
-# Methode 2: Nur Passwort (Nutzt explizit Shift)
 config.bind(
     "<Alt+Shift+P>", "spawn --userscript qute-bitwarden --password-only", mode="normal"
 )
@@ -31,6 +28,8 @@ config.bind(
     mode="insert",
 )
 
+# Darkmode toggle:
+config.bind("td", "config-cycle colors.webpage.darkmode.enabled true false")
 
 # This is here so configs done via the GUI are still loaded.
 # Remove it to not load settings done via the GUI.
