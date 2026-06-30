@@ -1,0 +1,6 @@
+#!/bin/bash
+TMP_FILE="/tmp/qute_buffer.txt"
+wl-paste >"$TMP_FILE"
+kitty --class qutebrowser-editor -e nvim "$TMP_FILE"
+cat "$TMP_FILE" | wl-copy
+rm "$TMP_FILE"

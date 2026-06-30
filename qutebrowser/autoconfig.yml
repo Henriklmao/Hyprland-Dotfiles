@@ -10,6 +10,11 @@ settings:
     global: true
   colors.webpage.darkmode.enabled:
     global: true
+  content.blocking.adblock.lists:
+    global:
+    - https://easylist.to/easylist/easylist.txt
+    - https://easylist.to/easylist/easyprivacy.txt
+    - https://secure.fanboy.co.nz/fanboy-annoyance.txt
   content.cookies.accept:
     '*://www.google.com/*': all
     global: no-3rdparty
@@ -17,6 +22,10 @@ settings:
     https://gemini.google.com: access-paste
   content.notifications.enabled:
     https://www.youtube.com: false
+  statusbar.show:
+    global: in-mode
+  tabs.show:
+    global: multiple
   url.default_page:
     global: google.com
   url.searchengines:
