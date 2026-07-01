@@ -22,6 +22,7 @@ settings:
     https://gemini.google.com: access-paste
     https://github.com: access-paste
   content.notifications.enabled:
+    https://cloudpanel.ionos.de: false
     https://www.youtube.com: false
   qt.environ:
     global:
