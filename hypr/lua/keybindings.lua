@@ -14,7 +14,7 @@ hl.bind(mainMod .. " + CTRL + ESCAPE", hl.dsp.exec_cmd("wlshutdown"))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("~/.config/hypr/scripts/launcher.sh"))
 
 -- Focus & Navigation
-hl.bind("ALT + TAB", hl.dsp.focus({ direction = "right" }))
+hl.bind("ALT + TAB", hl.dsp.window.cycle_next())
 hl.bind(mainMod .. " + LEFT", hl.dsp.focus({ direction = "l" }))
 hl.bind(mainMod .. " + RIGHT", hl.dsp.focus({ direction = "r" }))
 hl.bind(mainMod .. " + UP", hl.dsp.focus({ direction = "u" }))
