@@ -117,7 +117,7 @@ local function send_shortcut_once(mods, key)
 	end
 end
 
-hl.bind("SUPER + C", send_shortcut_once("CTRL", "Insert"))
-hl.bind("SUPER + V", send_shortcut_once("SHIFT", "Insert"))
-hl.bind("SUPER + X", send_shortcut_once("CTRL", "X"))
+hl.bind(mainMod .. " + C", send_shortcut_once("CTRL", "Insert"))
+hl.bind(mainMod .. " + V", send_shortcut_once("SHIFT", "Insert"))
+hl.bind(mainMod .. " + X", send_shortcut_once("CTRL", "X"))
 hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("~/.config/ml4w/scripts/ml4w-cliphist"))
