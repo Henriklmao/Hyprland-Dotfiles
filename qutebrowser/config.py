@@ -58,6 +58,7 @@ c.content.blocking.hosts.lists.append(
 # Aliases:
 c.aliases["read"] = "spawn --userscript readability-js"
 c.aliases["cedit"] = "config-edit"
+c.aliases["do"] = "download-open"
 # This is here so configs done via the GUI are still loaded.
 # Remove it to not load settings done via the GUI.
 config.load_autoconfig(True)
