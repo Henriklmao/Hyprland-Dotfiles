@@ -26,6 +26,7 @@ if status is-interactive
     set -x PATH "$BUN_INSTALL/bin:$PATH"
     # Cargo
     set -gx PATH $HOME/.cargo/bin $PATH
+    set -e WINEDLLOVERRIDES # I don't know where it comes from, but it breaks wine.
     fastfetch
 end
 
