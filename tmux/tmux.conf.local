@@ -32,7 +32,10 @@ tmux_conf_new_session_prompt=false
 #   - disabled (do not modify new-session bindings)
 tmux_conf_new_session_retain_current_path=false
 
-
+set -s escape-time 0
+set -g allow-passthrough on
+set -g default-terminal "tmux-256color"
+set -ga terminal-overrides ",xterm-256color:Tc"
 # -- windows & pane creation ---------------------------------------------------
 
 # new window retains current path, possible values are:
