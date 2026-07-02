@@ -19,9 +19,11 @@ settings:
     '*://www.google.com/*': all
     global: no-3rdparty
   content.javascript.clipboard:
+    http://localhost:7000: access-paste
     https://gemini.google.com: access-paste
     https://github.com: access-paste
   content.notifications.enabled:
+    http://localhost:7000: true
     https://cloudpanel.ionos.de: false
     https://www.youtube.com: false
   qt.environ:
