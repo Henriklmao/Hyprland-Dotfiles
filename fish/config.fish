@@ -29,7 +29,10 @@ if status is-interactive
     set -e WINEDLLOVERRIDES # I don't know where it comes from, but it breaks wine.
     fastfetch
 end
-
+function fish_user_key_bindings
+    # Das zwingt Fish, die Vi-Bindings zu laden
+    fish_vi_key_bindings
+end
 # FRITZ!Box WireGuard Toggle
 function fritz
     # Überprüfen, ob das Interface 'fritz' bereits existiert
