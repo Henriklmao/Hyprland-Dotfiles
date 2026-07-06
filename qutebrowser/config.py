@@ -20,6 +20,7 @@ config = config  # type: ignore
 
 dracula.draw.blood(c, {"spacing": {"vertical": 6, "horizontal": 8}})
 config.bind(",a", "spawn qutebrowser --target window --qt-flag app={url} ;; tab-close")
+
 ## Vaultwarden ##
 config.bind("<Ctrl-b>", "spawn --userscript qute-rbw", mode="insert")
 os.environ["BW_HOST"] = "https://vw.henrikb.site"
@@ -27,7 +28,6 @@ config.bind("<Alt+p>", "spawn --userscript qute-bitwarden", mode="normal")
 config.bind(
     "<Alt+p>", "spawn --userscript qute-bitwarden ;; mode-enter normal", mode="insert"
 )
-
 config.bind(
     "<Alt+Shift+P>", "spawn --userscript qute-bitwarden --password-only", mode="normal"
 )
@@ -46,6 +46,9 @@ config.bind(
     "fake-key <Ctrl-v>",
     mode="insert",
 )
+# Clipboard fix:
+config.bind("<Shift-Insert>", "insert-text {clipboard}", mode="insert")
+config.bind("<Shift-Insert>", "insert-text {clipboard}", mode="passthrough")
 # Annoying ctrl+A
 config.unbind("<Ctrl-a>", mode="normal")
 # Darkmode toggle:
