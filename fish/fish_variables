@@ -1,3 +1,30 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export FZF_DEFAULT_OPTS:\x2d\x2dcycle\x20\x2d\x2dlayout\x3ddefault\x20\x2d\x2dheight\x3d90\x25\x20\x2d\x2dpreview\x2dwindow\x3dwrap\x20\x2d\x2dmarker\x3d\x22\x2a\x22\x20\x2d\x2dcolor\x3dbg\x2b\x3a\x23\x2cbg\x3a\x23\x2cspinner\x3a\x23\x2chl\x3a\x23\x20\x2d\x2dcolor\x3dfg\x3a\x23\x2cheader\x3a\x23\x2cinfo\x3a\x23\x2cpointer\x3a\x23\x20\x2d\x2dcolor\x3dmarker\x3a\x23\x2cfg\x2b\x3a\x23\x2cprompt\x3a\x23\x2chl\x2b\x3a\x23
 SETUVAR __fish_initialized:4300
+SETUVAR background:\x23
+SETUVAR color0:\x23
+SETUVAR color1:\x23
+SETUVAR color10:\x23
+SETUVAR color11:\x23
+SETUVAR color12:\x23
+SETUVAR color13:\x23
+SETUVAR color14:\x23
+SETUVAR color15:\x23
+SETUVAR color2:\x23
+SETUVAR color3:\x23
+SETUVAR color4:\x23
+SETUVAR color5:\x23
+SETUVAR color6:\x23
+SETUVAR color7:\x23
+SETUVAR color8:\x23
+SETUVAR color9:\x23
+SETUVAR cursor:\x23
+SETUVAR fish_color_command:green
+SETUVAR fish_color_history_current:\x2d\x2dbold
+SETUVAR fish_color_normal:normal
+SETUVAR fish_color_param:cyan
+SETUVAR fish_pager_color_completion:\x1d
+SETUVAR fish_pager_color_description:yellow
+SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
+SETUVAR foreground:\x23
