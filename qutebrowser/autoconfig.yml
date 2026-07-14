@@ -16,6 +16,8 @@ settings:
     - https://easylist.to/easylist/easyprivacy.txt
     - https://secure.fanboy.co.nz/fanboy-annoyance.txt
   content.cookies.accept:
+    '*://goals.eti.uni-siegen.de/*': all
+    '*://login.uni-siegen.de/*': all
     '*://www.google.com/*': all
     global: no-3rdparty
   content.javascript.clipboard:

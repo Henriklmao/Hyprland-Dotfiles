@@ -42,6 +42,7 @@ config.bind(
     "fake-key <Ctrl-a> ;; "
     "fake-key <Ctrl-c> ;; "
     "spawn --userscript qute-editor ;; "
+    "spawn cliphist list | head -n 1 | cliphist decode | wl-copy"
     "fake-key <Ctrl-a> ;; "
     "fake-key <Ctrl-v>",
     mode="insert",
