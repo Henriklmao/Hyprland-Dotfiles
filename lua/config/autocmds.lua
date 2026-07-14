@@ -8,9 +8,13 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
 -- for TMUX:
-vim.api.nvim_create_autocmd("DirChanged", {
+vim.api.nvim_create_autocmd({ "DirChanged", "VimEnter" }, {
+  pattern = "*",
   callback = function()
-    local cwd = vim.fn.getcwd()
-    vim.fn.chdir(cwd)
+    if vim.env.TMUX then
+      local cwd = vim.fn.getcwd()
+      local pane_id = vim.env.TMUX_PANE
+      vim.fn.system(string.format("tmux set-buffer -b tmux_cwd_%s '%s'", pane_id, cwd))
+    end
   end,
 })
