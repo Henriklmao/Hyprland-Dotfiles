@@ -96,10 +96,7 @@ hl.bind(mainMod .. " + SHIFT + X", hl.dsp.exec_cmd("qutebrowser https://x.com/")
 hl.bind(mainMod .. " + SHIFT + Y", hl.dsp.exec_cmd("qutebrowser https://youtube.com/"))
 hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd("qutebrowser https://gemini.google.com"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("deezer-enhanced"))
-hl.bind(
-	mainMod .. " + SHIFT + N",
-	hl.dsp.exec_cmd('kitty -- tmux new-session -A -c "#{pane_current_path}" -s "editor" \'nvim\'')
-)
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("kitty -- tmux new-session -A -s editor nvim"))
 hl.bind(mainMod .. " + ALT + B", hl.dsp.exec_cmd("btop"))
 hl.bind(mainMod .. " + SHIFT + O", hl.dsp.exec_cmd("md.obsidian.Obsidian"))
 
