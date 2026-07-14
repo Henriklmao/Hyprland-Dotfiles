@@ -56,9 +56,7 @@ config.unbind("<Ctrl-a>", mode="normal")
 config.bind("td", "config-cycle colors.webpage.darkmode.enabled true false")
 # Tracking links are shit
 c.url.open_base_url = True
-c.content.blocking.hosts.lists.append(
-    "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/ClearURLs%20for%20uBlock%20Origin.txt"
-)
+# c.content.blocking.hosts.lists.append("https://raw.githubusercontent.com/DandelionSprout/adfilt/master/ClearURLs%20for%20uBlock%20Origin.txt")
 # Aliases:
 c.aliases["read"] = "spawn --userscript readability-js"
 c.aliases["cedit"] = "config-edit"
@@ -1838,7 +1836,7 @@ c.editor.command = ["kitty", "--class", "qutebrowser-editor", "-e", "nvim", "{fi
 # Enable smooth scrolling for web pages. Note smooth scrolling does not
 # work with the `:scroll-px` command.
 # Type: Bool
-# c.scrolling.smooth = False
+c.scrolling.smooth = False
 
 # When to find text on a page case-insensitively.
 # Type: IgnoreCase
