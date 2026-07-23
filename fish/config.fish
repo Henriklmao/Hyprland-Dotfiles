@@ -21,17 +21,27 @@ if status is-interactive
     alias t="tmux"
     alias tls="tmux ls"
     alias ta="tmux a"
+    alias hist="history | nvim"
     # Bun
     set -x BUN_INSTALL "$HOME/.bun"
     set -x PATH "$BUN_INSTALL/bin:$PATH"
     # Cargo
     set -gx PATH $HOME/.cargo/bin $PATH
     set -e WINEDLLOVERRIDES # I don't know where it comes from, but it breaks wine.
-    fastfetch
+    fetch
 end
 function fish_user_key_bindings
     # Das zwingt Fish, die Vi-Bindings zu laden
     fish_vi_key_bindings
+end
+# yazi file manager
+function y
+    set tmp (mktemp -t "yazi-cwd.XXXXXX")
+    command yazi $argv --cwd-file="$tmp"
+    if read -z cwd <"$tmp"; and [ "$cwd" != "$PWD" ]; and test -d "$cwd"
+        builtin cd -- "$cwd"
+    end
+    command rm -f -- "$tmp"
 end
 # FRITZ!Box WireGuard Toggle
 function fritz
