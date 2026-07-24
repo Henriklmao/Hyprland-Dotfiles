@@ -25,7 +25,6 @@ DOTFILES_SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Define components: "Name|SourcePath|TargetPath"
 COMPONENTS=(
   "hypr|$DOTFILES_SRC/hypr|$HOME/.config/hypr"
-  "nwg-dock-hyprland|$DOTFILES_SRC/nwg-dock-hyprland|$HOME/.config/nwg-dock-hyprland"
   "waybar|$DOTFILES_SRC/waybar|$HOME/.config/waybar"
   "rofi|$DOTFILES_SRC/rofi|$HOME/.config/rofi"
   "swaync|$DOTFILES_SRC/swaync|$HOME/.config/swaync"
