@@ -40,6 +40,35 @@ COMPONENTS=(
   "nvim|nvim-branch|$HOME/.config/nvim"
 )
 
+TERM_COMPONENTS=(kitty fish starship tmux fastfetch yazi nvim)
+TERM_PACKAGES=(kitty fish starship tmux fastfetch yazi neovim git)
+
+add_component_if_missing() {
+  local candidate="$1"
+  for existing in "${TO_INSTALL[@]}"; do
+    if [ "$existing" == "$candidate" ]; then
+      return 0
+    fi
+  done
+  TO_INSTALL+=("$candidate")
+}
+
+install_terminal_packages() {
+  local packages=("$@")
+  local package_list
+  package_list="${packages[*]}"
+
+  if ! command -v pacman >/dev/null 2>&1; then
+    warn "Pacman not available. Skipping package installation btw."
+    info "Install these packages manually: ${package_list}"
+    return 0
+  fi
+
+  info "Installing terminal packages via pacman..."
+  sudo pacman -S --needed "${packages[@]}"
+  success "Terminal packages installed."
+}
+
 backup_and_link() {
   local name="$1"
   local src="$2"
@@ -126,6 +155,7 @@ usage() {
     IFS="|" read -r name src dest <<<"$comp"
     echo "  --${name}        Install ${name} config"
   done
+  echo "  -t, --term    Install all terminal related configs and required packages"
   echo "  -a, --all     Install all configs"
   echo "  -h, --help    Show this help"
   exit 1
@@ -137,12 +167,17 @@ if [ $# -eq 0 ]; then
 fi
 
 INSTALL_ALL=false
+INSTALL_TERM=false
 TO_INSTALL=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
   --all | -a)
     INSTALL_ALL=true
+    shift
+    ;;
+  --term | -t)
+    INSTALL_TERM=true
     shift
     ;;
   --help | -h) usage ;;
@@ -153,7 +188,7 @@ while [[ $# -gt 0 ]]; do
     for comp in "${COMPONENTS[@]}"; do
       IFS="|" read -r name src dest <<<"$comp"
       if [ "$name" == "$comp_name" ]; then
-        TO_INSTALL+=("$name")
+        add_component_if_missing "$name"
         found=true
       fi
     done
@@ -170,7 +205,13 @@ if [ "$INSTALL_ALL" = true ]; then
   TO_INSTALL=()
   for comp in "${COMPONENTS[@]}"; do
     IFS="|" read -r name src dest <<<"$comp"
-    TO_INSTALL+=("$name")
+    add_component_if_missing "$name"
+  done
+fi
+
+if [ "$INSTALL_TERM" = true ]; then
+  for component in "${TERM_COMPONENTS[@]}"; do
+    add_component_if_missing "$component"
   done
 fi
 
@@ -179,6 +220,10 @@ if [ "${#TO_INSTALL[@]}" -eq 0 ]; then
 fi
 
 confirm_installation "${TO_INSTALL[@]}"
+
+if [ "$INSTALL_TERM" = true ]; then
+  install_terminal_packages "${TERM_PACKAGES[@]}"
+fi
 
 for name in "${TO_INSTALL[@]}"; do
   install_component "$name"
