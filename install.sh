@@ -37,6 +37,7 @@ COMPONENTS=(
   "fish|$DOTFILES_SRC/fish|$HOME/.config/fish"
   "qutebrowser|$DOTFILES_SRC/qutebrowser|$HOME/.config/qutebrowser"
   "quickshell|$DOTFILES_SRC/quickshell|$HOME/.config/quickshell"
+  "yazi|$DOTFILES_SRC/yazi|$HOME/.config/yazi"
 )
 
 backup_and_link() {
