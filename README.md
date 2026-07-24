@@ -23,7 +23,7 @@ For full installation:
 ./install.sh --all
 ```
 
-For selecitve installation:
+For selective installation:
 
 ```bash
 ./install.sh --hypr --waybar --nvim

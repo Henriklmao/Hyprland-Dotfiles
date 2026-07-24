@@ -60,9 +60,10 @@ keymap = [
 	{ on = "<Tab>", run = "spot", desc = "Spot hovered file" },
 
 	# Operation
-	{ on = "o",         run = "open",                        desc = "Open selected files" },
-	{ on = "O",         run = "open --interactive",          desc = "Open selected files interactively" },
-	{ on = "<Enter>",   run = "enter",                        desc = "Open selected files" },
+	{ on = "E",         run = "open",                        desc = "Open selected files" },
+	{ on = "o",         run = "open --interactive",          desc = "Open selected files interactively" },
+  { on = "n",         run = 'shell --block "nvim ."',      desc = "Open cwd in nvim" },
+  { on = "<Enter>",   run = "enter",                       desc = "Open selected files" },
 	{ on = "<S-Enter>", run = "open --interactive",          desc = "Open selected files interactively" },
 	{ on = "y",         run = "yank",                        desc = "Yank selected files (copy)" },
 	{ on = "x",         run = "yank --cut",                  desc = "Yank selected files (cut)" },
