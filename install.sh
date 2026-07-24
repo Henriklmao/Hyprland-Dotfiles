@@ -37,6 +37,7 @@ COMPONENTS=(
   "qutebrowser|$DOTFILES_SRC/qutebrowser|$HOME/.config/qutebrowser"
   "quickshell|$DOTFILES_SRC/quickshell|$HOME/.config/quickshell"
   "yazi|$DOTFILES_SRC/yazi|$HOME/.config/yazi"
+  "nvim|nvim-branch|$HOME/.config/nvim"
 )
 
 backup_and_link() {
@@ -69,11 +70,53 @@ install_component() {
     IFS="|" read -r name src dest <<<"$comp"
     if [ "$name" == "$name_to_install" ]; then
       info "Installing $name..."
-      backup_and_link "$name" "$src" "$dest"
+      if [ "$name" == "nvim" ]; then
+        install_nvim
+      else
+        backup_and_link "$name" "$src" "$dest"
+      fi
       return 0
     fi
   done
   error "Component '$name_to_install' not found."
+}
+
+install_nvim() {
+  local nvim_target="$HOME/.config/nvim"
+  local nvim_backup="${nvim_target}-"
+  local nvim_repo="https://github.com/Henriklmao/Hyprland-Dotfiles.git"
+
+  mkdir -p "$(dirname "$nvim_target")"
+
+  if [ -L "$nvim_target" ]; then
+    warn "Existing symlink found at $nvim_target. Removing it."
+    rm "$nvim_target"
+  elif [ -e "$nvim_target" ]; then
+    warn "Existing nvim config found at $nvim_target. Creating backup: $nvim_backup"
+    [ -e "$nvim_backup" ] && rm -rf "$nvim_backup"
+    mv "$nvim_target" "$nvim_backup"
+  fi
+
+  git clone --branch nvim --single-branch "$nvim_repo" "$nvim_target"
+  success "Cloned nvim branch to $nvim_target"
+}
+
+confirm_installation() {
+  local components=("$@")
+
+  info "The following components will be installed:"
+  for name in "${components[@]}"; do
+    echo "  - $name"
+  done
+
+  read -r -p "Continue? [y/N]: " confirm
+  case "$confirm" in
+  y | Y | yes | YES | Yes) ;;
+  *)
+    warn "Installation aborted."
+    exit 0
+    ;;
+  esac
 }
 
 usage() {
@@ -124,14 +167,21 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [ "$INSTALL_ALL" = true ]; then
+  TO_INSTALL=()
   for comp in "${COMPONENTS[@]}"; do
     IFS="|" read -r name src dest <<<"$comp"
-    install_component "$name"
-  done
-else
-  for name in "${TO_INSTALL[@]}"; do
-    install_component "$name"
+    TO_INSTALL+=("$name")
   done
 fi
+
+if [ "${#TO_INSTALL[@]}" -eq 0 ]; then
+  error "No components selected."
+fi
+
+confirm_installation "${TO_INSTALL[@]}"
+
+for name in "${TO_INSTALL[@]}"; do
+  install_component "$name"
+done
 
 success "Configuration finished!"
