@@ -1,31 +1,29 @@
--- Main Hyprland Configuration (Lua)
--- Fully migrated from HenrikHyprkey_Standard.conf and ML4W configs
+-- Learn how to configure Hyprland: https://wiki.hypr.land/Configuring/Start/
 
--- Environment
-require("lua.env")
+-- Omarchy's bootstrap keeps path setup out of this user config.
+dofile((os.getenv("OMARCHY_PATH") or "/usr/share/omarchy") .. "/default/hypr/bootstrap.lua")
 
--- Core Settings
-require("lua.general")
-require("lua.keyboard")
-require("lua.misc")
-require("lua.layout")
+-- Disable all Omarchy default bindings. Add your own in hypr/bindings.lua.
+-- omarchy_default_bindings = false
+--
+-- Or disable only bindings for Omarchy's preinstalled apps/web apps while
+-- keeping core window-manager bindings:
+-- omarchy_preinstalled_bindings = false
 
--- Visuals
-require("lua.decoration")
-require("lua.animation")
-require("lua.monitors")
+-- Load Omarchy defaults.
+require("default.hypr.omarchy")
 
--- Rules & Custom
-require("lua.windows")
-require("lua.ml4w")
--- Keybindings
-require("lua.keybindings")
+-- Put your personal overrides in these files. They're loaded after Omarchy's
+-- defaults so package updates can improve the defaults without rewriting your
+-- ~/.config/hypr files.
+require("hypr.monitors")
+require("hypr.input")
+require("hypr.bindings")
+require("hypr.looknfeel")
+require("hypr.autostart")
 
--- Autostart
-require("lua.autostart")
+-- Toggle config flags dynamically.
+require("default.hypr.toggles")
 
--- Start command (Global environment update)
-hl.on("hyprland.start", function()
-	hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-	hl.exec_cmd("xdg-user-dirs-update")
-end)
+-- Add any other personal Hyprland configuration below.
+-- o.window("qemu", { workspace = "5" })
