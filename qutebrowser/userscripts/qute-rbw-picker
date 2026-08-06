@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+
+command-exists() {
+  command -v "$@" >/dev/null 2>&1
+}
+
+# checks for the rbw installation path though cargo and appends it to PATH just
+if [[ -d "$HOME/.cargo/bin" ]]; then
+  # to be sure
+  PATH="${HOME}/.cargo/bin:${PATH}"
+fi
+
+err() {
+  local err=$?
+
+  if ((err == 0)); then
+    echo "${ANSI[green]}${err@Q} ${ANSI[bold]}$*${ANSI[nc]}"
+  else
+    echo "${ANSI[red]}${err@Q} ${ANSI[bold]}$*${ANSI[nc]}"
+  fi
+
+  echo "Press any key to continue.."
+  read -n1
+  exit ${err}
+}
+
+declare -A ANSI # for echo and stuff (ansi sequences)
+ANSI=(
+  ["bold"]=$'\e[1m'
+  ["bolt"]=$'\e[1m'
+  ["italic"]=$'\e[3m'
+  ["blink"]=$'\e[5m'
+  ["underline"]=$'\e[4m'
+  ["undercurl"]=$'\e[4m'
+  ["strike"]=$'\e[9m'
+  ["invert"]=$'\e[7m'
+  ["reset"]=$'\e[0m'
+  ["nc"]=$'\e[0m'
+
+  ["black"]=$'\e[38;2;40;40;40m'     # #282828
+  ["red"]=$'\e[38;2;204;36;29m'      # #CC241D
+  ["green"]=$'\e[38;2;152;151;26m'   # #98971A
+  ["yellow"]=$'\e[38;2;215;153;33m'  # #D79921
+  ["blue"]=$'\e[38;2;69;133;136m'    # #458383
+  ["magenta"]=$'\e[38;2;177;98;134m' # #B16286
+  ["cyan"]=$'\e[38;2;104;157;106m'   # #688D6A
+  ["white"]=$'\e[38;2;235;219;178m'  # #EBDBB2 (foreground/light)
+)                                    # the gruvbox colors
+
+check-deps() {
+  local missing=()
+  command-exists rbw || missing+=("rbw")
+  command-exists jq || missing+=("jq")
+  if ! command-exists fzf; then
+    if ! command-exists sk; then
+      missing+=("fzf|sk")
+    fi
+  fi
+
+  ((${#missing[@]} == 0)) || {
+    err "${ANSI[yellow]}Missing some core components: ${ANSI[red]}${missing[*]@Q}${ANSI[nc]}"
+  }
+}
+
+[[ -n "$FZF_TOOL" ]] || {
+  if command-exists fzf; then
+    FZF_TOOL=fzf
+  elif command-exists sk; then
+    FZF_TOOL=sk
+  else
+    err "We do not have a fuzzer installed.. (fzf | skim)"
+  fi
+}
+
+fzf-cmd() {
+  local header cmd args query
+  header=$1
+
+  case "$FZF_TOOL" in
+  fzf)
+    cmd=fzf
+    args=("--reverse" "--ghost=type to filter.." "--style=full:rounded" "--margin=12%" "--color=16" "--cycle" "--no-multi" "--header=$header")
+    ;;
+  sk | skim)
+    cmd=sk
+    args=("--margin=12%" "--color=16" "--reverse" "--header=$header")
+    ;;
+  *)
+    $FZF_TOOL
+    return
+    ;;
+  esac
+
+  [[ "$header" =~ "Select a password entry" ]] && {
+    [[ -z "$QUTE_URL" ]] || {
+      args+=("--query=$(rbw:search "$QUTE_URL")")
+    }
+  }
+
+  $cmd "${args[@]}"
+  return
+}
+
+rbw:search() {
+  local rc="https://(.*.(de|com|uk|me))"
+
+  [[ "$1" =~ $rc ]] && {
+    rbw search "${BASH_REMATCH[1]}" | head -1
+  }
+}
+
+copy-cmd() {
+  if command-exists wl-copy && [[ -n "$WAYLAND_DISPLAY" ]]; then
+    wl-copy "$@"
+  elif command-exists xclip; then
+    xclip "$@"
+  fi
+}
+
+passwords() {
+  if ! rbw unlocked; then
+    rbw unlock
+  fi
+
+  rbw ls
+}
+
+for-pw() {
+  local length=${1:-}
+
+  for ((i = 0; i < length; i++)); do
+    printf "*"
+  done
+}
+
+main() {
+  local entry data file=$1
+  local pws=() line
+
+  while read -r line; do
+    [[ -n "$line" ]] || continue
+    pws+=("$line")
+  done < <(passwords)
+
+  ((${#pws[@]} > 0)) || {
+    err "No passwords found!"
+  }
+
+  pws+=("Quit")
+
+  entry="$(printf "%s\n" "${pws[@]}" | fzf-cmd "Select a password entry!")"
+  [[ "$entry" != "Quit" ]] || exit 0
+
+  [[ -n "$file" ]] || {
+    err "\$1 was empty, or $file is no file!"
+  }
+
+  [[ -n "$entry" ]] || {
+    err "We are missing an \$entry entry."
+  }
+
+  data="$(rbw get --raw "$entry")"
+
+  [[ -n "$data" ]] || {
+    err "We have gotten no data from the entry: $entry"
+  }
+
+  local -a FOO=(
+    "$(jq -r '.name' <<<"$data")"
+    "$(jq -r '.folder' <<<"$data")"
+    "$(jq -r '.data.username' <<<"$data")"
+    "$(jq -r '.data.password' <<<"$data")"
+    "$(jq -r '.data.totp' <<<"$data")"
+  )
+
+  local entry_title username password totp option
+  entry_title="${FOO[0]} (${FOO[1]})"
+  username="${FOO[2]}"
+  password="${FOO[3]}"
+
+  totp="${FOO[4]}"
+
+  local opts=()
+
+  [[ "$username" != "null" ]] && {
+    opts+=("Username: ${username}")
+  }
+
+  [[ "$password" != "null" ]] && {
+    opts+=("Password: $(for-pw "${#password}")")
+  }
+
+  [[ "$totp" != "null" ]] && {
+    totp="$(rbw code "$entry")"
+    opts+=("OTP: $totp")
+  }
+
+  opts+=("Quit")
+  option="$(printf "%s\n" "${opts[@]}" | fzf-cmd "$entry_title")"
+
+  [[ -n "$option" ]] || {
+    err "We are missing an \$option!"
+  }
+
+  case "$option" in
+  Username:*)
+    printf "%s" "$username" >"$file"
+    ;;
+  Password:*)
+    printf "%s" "$password" >"$file"
+
+    if [[ "$totp" != "null" ]]; then
+      copy-cmd "$totp"
+    fi
+    ;;
+  OTP:*)
+    printf "%s" "$totp" >"$file"
+    ;;
+  Exit | Quit)
+    exit 0
+    ;;
+  esac
+}
+
+main "$1"

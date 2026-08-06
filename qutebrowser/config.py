@@ -20,22 +20,11 @@ config = config  # type: ignore
 
 dracula.draw.blood(c, {"spacing": {"vertical": 6, "horizontal": 8}})
 config.bind(",a", "spawn qutebrowser --target window --qt-flag app={url} ;; tab-close")
-
+c.new_instance_open_target = "tab"
+os.environ["SHELL"] = "/bin/bash"
 ## Vaultwarden ##
-config.bind("<Ctrl-b>", "spawn --userscript qute-rbw", mode="insert")
-os.environ["BW_HOST"] = "https://vw.henrikb.site"
-config.bind("<Alt+p>", "spawn --userscript qute-bitwarden", mode="normal")
-config.bind(
-    "<Alt+p>", "spawn --userscript qute-bitwarden ;; mode-enter normal", mode="insert"
-)
-config.bind(
-    "<Alt+Shift+P>", "spawn --userscript qute-bitwarden --password-only", mode="normal"
-)
-config.bind(
-    "<Alt+Shift+P>",
-    "spawn --userscript qute-bitwarden --password-only ;; mode-enter normal",
-    mode="insert",
-)
+config.bind("<Alt+p>", "spawn --userscript qute-rbw", mode="insert")
+config.bind("<Alt+p>", "spawn --userscript qute-rbw", mode="normal")
 # nvim improved edit
 config.bind(
     "<Ctrl-e>",
