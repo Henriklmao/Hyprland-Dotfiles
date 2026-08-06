@@ -165,3 +165,8 @@ complete --erase --command zi
 alias zi=__zoxide_zi
 
 # =============================================================================
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /home/henrik/.lmstudio/bin
+# End of LM Studio CLI section
+
