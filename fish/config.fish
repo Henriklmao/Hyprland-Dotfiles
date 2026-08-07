@@ -10,7 +10,7 @@ if status is-interactive
     alias se="sudoedit"
     alias chx="sudo chmod +x"
     alias prev="bun run build && bun run preview --open"
-    alias pretty="npx prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md,mdx,html,yml,yaml,svelte}\" --ignore-path .gitignore"
+    alias pretty="npx prettier --write . --ignore-path .gitignore --ignore-path .prettierignore"
     alias watch60="watch -n 60 -t"
     alias lg="lazygit"
     alias reflect="sudo reflector --country Germany --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
@@ -169,4 +169,3 @@ alias zi=__zoxide_zi
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /home/henrik/.lmstudio/bin
 # End of LM Studio CLI section
-
