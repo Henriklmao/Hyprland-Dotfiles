@@ -13,10 +13,23 @@ dofile((os.getenv("OMARCHY_PATH") or "/usr/share/omarchy") .. "/default/hypr/boo
 -- Load Omarchy defaults.
 require("default.hypr.omarchy")
 
+-- Split config for Desktop and laptop
+local handle = io.popen("hostname")
+local raw_hostname = handle and handle:read("*a")
+if handle then
+	handle:close()
+end
+HOSTNAME = raw_hostname and raw_hostname:gsub("%s+", "") or ""
+IS_SURFACE = (HOSTNAME == "surfacebtw")
+
 -- Put your personal overrides in these files. They're loaded after Omarchy's
 -- defaults so package updates can improve the defaults without rewriting your
 -- ~/.config/hypr files.
-require("hypr.monitors")
+if IS_SURFACE then
+	require("hypr.surfaceMonitor")
+else
+	require("hypr.monitors")
+end
 require("hypr.input")
 require("hypr.bindings")
 require("hypr.looknfeel")

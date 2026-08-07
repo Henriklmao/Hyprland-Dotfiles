@@ -3,6 +3,8 @@
 
 -- Keyboard layout and options.
 -- See https://wiki.hypr.land/Configuring/Basics/Variables/#input
+-- Seperate Sensitivity for laptop and desktop
+local sens = IS_SURFACE and 0 or -0.75
 hl.config({
 	input = {
 		--     -- Use multiple keyboard layouts and switch between them with Left Alt + Right Alt.
@@ -20,27 +22,27 @@ hl.config({
 		--     numlock_by_default = true,
 		--
 		--     -- Increase sensitivity for mouse/trackpad (default: 0).
-		sensitivity = -0.75,
+		sensitivity = sens,
 		--
 		--     -- Turn off mouse acceleration (default: adaptive).
 		--     accel_profile = "flat",
 		--
-		--     touchpad = {
-		--       -- Use natural (inverse) scrolling.
-		--       natural_scroll = true,
-		--
-		--       -- Use two-finger clicks for right-click instead of lower-right corner.
-		--       clickfinger_behavior = true,
-		--
-		--       -- Control the speed of your scrolling.
-		--       scroll_factor = 0.4,
-		--
-		--       -- Enable the touchpad while typing.
-		--       disable_while_typing = false,
-		--
-		--       -- Left-click-and-drag with three fingers.
-		--       drag_3fg = 1,
-		--     },
+		touchpad = {
+			-- Use natural (inverse) scrolling.
+			natural_scroll = true,
+
+			-- Use two-finger clicks for right-click instead of lower-right corner.
+			-- clickfinger_behavior = true,
+			--
+			-- Control the speed of your scrolling.
+			scroll_factor = 0.4,
+			--
+			-- Enable the touchpad while typing.
+			disable_while_typing = false,
+			--
+			-- Left-click-and-drag with three fingers.
+			-- drag_3fg = 1,
+		},
 	},
 })
 
@@ -50,7 +52,7 @@ hl.config({
 
 -- Enable touchpad gestures for changing workspaces.
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
--- hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
+hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
 
 -- Enable touchpad gestures for moving focus (helpful on scrolling layout).
 -- hl.gesture({ fingers = 3, direction = "left", action = function() hl.dispatch(hl.dsp.focus({ direction = "l" })) end })
