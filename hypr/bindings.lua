@@ -34,7 +34,7 @@ o.bind("SHIFT + ALT + T", "Tmux", 'uwsm-app -- xdg-terminal-exec --dir="$(omarch
 hl.unbind("SUPER + SHIFT + T")
 o.bind("SUPER + SHIFT + T", "Terminal", 'uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)"')
 hl.unbind("SUPER + SHIFT + F")
-o.bind("SUPER + SHIFT + F", "File manager", "kitty fish -c z && y &")
+o.bind("SUPER + SHIFT + F", "File manager", 'kitty --class yazi-float fish -c "y; exec fish"')
 hl.unbind("SUPER + SHIFT + B")
 o.bind("SUPER + SHIFT + B", "Browser", "qutebrowser")
 hl.unbind("SUPER + SHIFT + ALT + B")
