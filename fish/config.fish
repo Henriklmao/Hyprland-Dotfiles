@@ -6,6 +6,7 @@ if status is-interactive
     alias vim="nvim"
     alias cop="copilot"
     alias oc="opencode"
+    alias olc="ollama launch opencode"
     alias e="nautilus ."
     alias se="sudoedit"
     alias chx="sudo chmod +x"
