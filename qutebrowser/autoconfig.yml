@@ -9,7 +9,7 @@ settings:
   auto_save.session:
     global: true
   colors.webpage.darkmode.enabled:
-    global: true
+    global: false
   content.blocking.adblock.lists:
     global:
     - https://easylist.to/easylist/easylist.txt
@@ -40,3 +40,5 @@ settings:
   url.searchengines:
     global:
       DEFAULT: https://google.com/search?hl=en&q={}
+  zoom.default:
+    global: 125%
