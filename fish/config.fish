@@ -4,9 +4,8 @@ if status is-interactive
     set -x EDITOR nvim
     alias vi="nvim"
     alias vim="nvim"
-    alias cop="copilot"
-    alias oc="opencode"
-    alias olc="ollama launch opencode"
+    alias pri="prime-agent"
+    alias ol="ollama launch opencode"
     alias e="nautilus ."
     alias se="sudoedit"
     alias chx="sudo chmod +x"
