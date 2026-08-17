@@ -54,9 +54,20 @@ function fritz
         sudo wg-quick up fritz
     end
 end
+# Vim in Tmux Session
 function vi
     set session_name (basename (pwd))
     tmux new-session -A -c (pwd) -s "$session_name" nvim -c Explore
+end
+# GCloud-CLI
+# The next line updates PATH for the Google Cloud SDK.
+if test -f '/home/henrik/bin/google-cloud-sdk/path.fish.inc'
+    source '/home/henrik/bin/google-cloud-sdk/path.fish.inc'
+end
+
+# The next line enables shell command completion for gcloud.
+if test -f '/home/henrik/bin/google-cloud-sdk/completion.fish.inc'
+    source '/home/henrik/bin/google-cloud-sdk/completion.fish.inc'
 end
 
 # Created by `pipx` on 2026-03-31 14:21:26
