@@ -16,7 +16,9 @@ set -g default-shell /usr/bin/fish
 #   - true
 #   - false (default)
 tmux_conf_preserve_stock_bindings=false
-
+unbind C-b
+set -g prefix C-Space
+bind C-Space send-prefix
 
 # -- session creation ----------------------------------------------------------
 
