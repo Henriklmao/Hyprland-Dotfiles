@@ -19,17 +19,8 @@ command-exists() {
   command -v "$@" >/dev/null 2>&1
 }
 
-## debug
-# export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}"
-# export DISPLAY="${DISPLAY:-}"
-# export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
-# echo "PID: $$" >>/tmp/qute-rbw-debug.log
-
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 picker="${script_dir}/qute-rbw-picker"
-
-# TODO: make a dynamic terminal var
-# # Fix right now is the awesome `wm-term` application, written by myself :)
 
 if command-exists wm-term; then
   wm-term "$picker" "$tmpfile" &
@@ -38,24 +29,51 @@ else
 fi
 pid=$!
 
-# Wait for kitty (the picker session) to finish
+# Wait for the picker to finish
 wait $pid || true
 kill -0 $pid 2>/dev/null && kill -9 $pid
 
-# Read password and TOTP from tmpfile
+# Read output from tmpfile
 mapfile -t lines <"$tmpfile"
-pass="${lines[0]}"
-totp="${lines[1]}"
+action="${lines[0]}"
 
-# Send text to qutebrowser
-echo "insert-text $pass" >>"$QUTE_FIFO"
+if [[ "$action" == "both" ]]; then
+  # Both: username on line 2, password on line 3, optional totp on line 4
+  username="${lines[1]}"
+  password="${lines[2]}"
+  totp="${lines[3]}"
 
-# Copy TOTP if present
-if [[ -n "${totp}" ]]; then
-  echo "${totp}" | copy-cmd &
-  disown
+  # Insert username into qutebrowser
+  echo "insert-text $username" >>"$QUTE_FIFO"
+  sleep 0.2
+  # Tab to next field
+  echo "fake-key <Tab>" >>"$QUTE_FIFO"
+  sleep 0.2
+  # Insert password
+  echo "insert-text $password" >>"$QUTE_FIFO"
+  sleep 0.2
+  # Return to insert mode
+  echo "insert-mode" >>"$QUTE_FIFO"
+  sleep 0.3
+
+  # Copy TOTP if present
+  if [[ -n "${totp}" ]]; then
+    echo "${totp}" | copy-cmd &
+    disown
+  fi
+else
+  # Single value: password or username or otp
+  pass="${lines[0]}"
+  totp="${lines[1]}"
+
+  # Send text to qutebrowser
+  echo "insert-text $pass" >>"$QUTE_FIFO"
+
+  # Copy TOTP if present
+  if [[ -n "${totp}" ]]; then
+    echo "${totp}" | copy-cmd &
+    disown
+  fi
 fi
 
 rm -f "$tmpfile"
-
-#some change

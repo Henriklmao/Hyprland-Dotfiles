@@ -133,9 +133,62 @@ for-pw() {
   done
 }
 
+# Fetch raw rbw data for a single entry by name+username
+rbw:fetch-raw() {
+  local entry="$1" user="$2"
+  if [[ -n "$user" ]]; then
+    rbw get --raw "$entry" "$user"
+  else
+    rbw get --raw "$entry"
+  fi
+}
+
+# Parse raw JSON into variables: _name, _username, _password, _totp, _title
+rbw:parse-raw() {
+  local data="$1"
+  _name="$(jq -r '.name' <<<"$data")"
+  _username="$(jq -r '.data.username' <<<"$data")"
+  _password="$(jq -r '.data.password' <<<"$data")"
+  _totp="$(jq -r '.data.totp' <<<"$data")"
+  _title="${_name}"
+}
+
+# Prompt for multiple accounts sharing the same entry name
+# Returns selected username via stdout
+rbw:pick-account() {
+  local entry="$1"
+  local error output usernames=()
+
+  error="$(rbw get --raw "$entry" 2>&1)"
+  # Parse "multiple entries found: user1@entry, user2@entry, ..."
+  local found="${error##*multiple entries found: }"
+
+  IFS=', ' read -ra entries <<< "$found"
+  for e in "${entries[@]}"; do
+    local user="${e%%@*}"
+    [[ -n "$user" ]] && usernames+=("$user")
+  done
+
+  # Deduplicate
+  local unique_users=()
+  for u in "${usernames[@]}"; do
+    local found=0
+    for nu in "${unique_users[@]}"; do
+      [[ "$u" == "$nu" ]] && { found=1; break; }
+    done
+    ((found == 0)) && unique_users+=("$u")
+  done
+
+  local selected
+  selected="$(printf "%s\n" "${unique_users[@]}" | fzf-cmd "Select account for $entry")"
+  printf "%s" "$selected"
+}
+
 main() {
   local entry data file=$1
   local pws=() line
+
+  check-deps
 
   while read -r line; do
     [[ -n "$line" ]] || continue
@@ -159,50 +212,63 @@ main() {
     err "We are missing an \$entry entry."
   }
 
-  data="$(rbw get --raw "$entry")"
+  # Try fetching the entry; handle multiple accounts
+  local account_user=""
+  data="$(rbw get --raw "$entry" 2>/dev/null)"
+
+  if [[ -z "$data" ]]; then
+    # Multiple entries found — show account picker submenu
+    account_user="$(rbw:pick-account "$entry")"
+    [[ -n "$account_user" ]] || {
+      err "No account selected!"
+    }
+    data="$(rbw:fetch-raw "$entry" "$account_user")"
+  fi
 
   [[ -n "$data" ]] || {
     err "We have gotten no data from the entry: $entry"
   }
 
-  local -a FOO=(
-    "$(jq -r '.name' <<<"$data")"
-    "$(jq -r '.folder' <<<"$data")"
-    "$(jq -r '.data.username' <<<"$data")"
-    "$(jq -r '.data.password' <<<"$data")"
-    "$(jq -r '.data.totp' <<<"$data")"
-  )
+  rbw:parse-raw "$data"
 
-  local entry_title username password totp option
-  entry_title="${FOO[0]} (${FOO[1]})"
-  username="${FOO[2]}"
-  password="${FOO[3]}"
-
-  totp="${FOO[4]}"
+  local username="${_username}"
+  local password="${_password}"
+  local totp="${_totp}"
 
   local opts=()
 
-  [[ "$username" != "null" ]] && {
+  # Both (email + password) at the top
+  [[ "$username" != "null" && -n "$username" && "$password" != "null" && -n "$password" ]] && {
+    opts+=("Both (email + password)")
+  }
+
+  [[ "$username" != "null" && -n "$username" ]] && {
     opts+=("Username: ${username}")
   }
 
-  [[ "$password" != "null" ]] && {
+  [[ "$password" != "null" && -n "$password" ]] && {
     opts+=("Password: $(for-pw "${#password}")")
   }
 
-  [[ "$totp" != "null" ]] && {
-    totp="$(rbw code "$entry")"
+  [[ "$totp" != "null" && -n "$totp" ]] && {
+    totp="$(rbw code "$entry" ${account_user:+"$account_user"})"
     opts+=("OTP: $totp")
   }
 
   opts+=("Quit")
-  option="$(printf "%s\n" "${opts[@]}" | fzf-cmd "$entry_title")"
+  option="$(printf "%s\n" "${opts[@]}" | fzf-cmd "$_title")"
 
   [[ -n "$option" ]] || {
     err "We are missing an \$option!"
   }
 
   case "$option" in
+  Both*)
+    # Write both values to file for the main script to handle
+    # Line 1: action (both), Line 2: username, Line 3: password, Line 4: totp
+    printf "both\n%s\n%s\n%s\n" "$username" "$password" "${totp:-}" >"$file"
+    return
+    ;;
   Username:*)
     printf "%s" "$username" >"$file"
     ;;
