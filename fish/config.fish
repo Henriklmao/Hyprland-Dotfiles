@@ -15,8 +15,6 @@ if status is-interactive
     alias lg="lazygit"
     alias reflect="sudo reflector --country Germany --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
     # Servers
-    alias indigo="ssh root@87.106.191.54"
-    alias vps="ssh root@217.154.224.224"
     alias univpn='sudo openvpn --config ~/Documents/uni.ovpn'
     alias t="tmux"
     alias tls="tmux ls"
@@ -54,10 +52,31 @@ function fritz
         sudo wg-quick up fritz
     end
 end
+# Tmux session helper
+function tmux_session -d "Create or attach to a tmux session"
+    set -l name $argv[1]
+    set -l cmd $argv[2..-1]
+    if test -z "$name"
+        echo "Usage: tmux_session <session_name> [command...]"
+        return 1
+    end
+    if test (count $cmd) -gt 0
+        tmux new-session -A -c (pwd) -s "$name" $cmd
+    else
+        tmux new-session -A -c (pwd) -s "$name"
+    end
+end
 # Vim in Tmux Session
-function vi
-    set session_name (basename (pwd))
-    tmux new-session -A -c (pwd) -s "$session_name" nvim -c Explore
+function vi -d "Open nvim in current dir tmux session"
+    tmux_session (basename (pwd)) nvim -c Explore
+end
+# VPS
+function vps -d "Connect to VPS"
+    tmux_session vps ssh root@217.154.224.224
+end
+# Indigo
+function indigo -d "Connect to Indigo"
+    tmux_session indigo ssh root@87.106.191.54
 end
 # GCloud-CLI
 # The next line updates PATH for the Google Cloud SDK.
