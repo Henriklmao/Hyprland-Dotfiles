@@ -1,0 +1,36 @@
+[Default Applications]
+x-scheme-handler/mailto=userapp-Thunderbird-KQDKU3.desktop
+x-scheme-handler/mid=userapp-Thunderbird-KQDKU3.desktop
+message/rfc822=userapp-Thunderbird-KQDKU3.desktop
+x-scheme-handler/news=userapp-Thunderbird-649KU3.desktop
+x-scheme-handler/snews=userapp-Thunderbird-649KU3.desktop
+x-scheme-handler/nntp=userapp-Thunderbird-649KU3.desktop
+x-scheme-handler/feed=userapp-Thunderbird-ODKIU3.desktop
+application/rss+xml=userapp-Thunderbird-ODKIU3.desktop
+application/x-extension-rss=userapp-Thunderbird-ODKIU3.desktop
+x-scheme-handler/webcal=userapp-Thunderbird-C8RHU3.desktop
+x-scheme-handler/webcals=userapp-Thunderbird-C8RHU3.desktop
+text/calendar=userapp-Thunderbird-C8RHU3.desktop
+application/x-extension-ics=userapp-Thunderbird-C8RHU3.desktop
+x-scheme-handler/net.thunderbird=userapp-Thunderbird-X4QFU3.desktop
+text/html=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/http=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/https=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/about=org.qutebrowser.qutebrowser.desktop
+x-scheme-handler/unknown=org.qutebrowser.qutebrowser.desktop
+
+[Added Associations]
+x-scheme-handler/mailto=userapp-Thunderbird-KQDKU3.desktop;
+x-scheme-handler/mid=userapp-Thunderbird-KQDKU3.desktop;
+message/rfc822=userapp-Thunderbird-KQDKU3.desktop;
+x-scheme-handler/news=userapp-Thunderbird-649KU3.desktop;
+x-scheme-handler/snews=userapp-Thunderbird-649KU3.desktop;
+x-scheme-handler/nntp=userapp-Thunderbird-649KU3.desktop;
+x-scheme-handler/feed=userapp-Thunderbird-ODKIU3.desktop;
+application/rss+xml=userapp-Thunderbird-ODKIU3.desktop;
+application/x-extension-rss=userapp-Thunderbird-ODKIU3.desktop;
+x-scheme-handler/webcal=userapp-Thunderbird-C8RHU3.desktop;
+x-scheme-handler/webcals=userapp-Thunderbird-C8RHU3.desktop;
+text/calendar=userapp-Thunderbird-C8RHU3.desktop;
+application/x-extension-ics=userapp-Thunderbird-C8RHU3.desktop;
+x-scheme-handler/net.thunderbird=userapp-Thunderbird-X4QFU3.desktop;
