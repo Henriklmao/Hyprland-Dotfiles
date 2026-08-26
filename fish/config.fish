@@ -26,7 +26,8 @@ if status is-interactive
     # Cargo
     set -gx PATH $HOME/.cargo/bin $PATH
     set -e WINEDLLOVERRIDES # I don't know where it comes from, but it breaks wine.
-    fetch
+    set -l _fetch (command -s fetch; or command -s fastfetch)
+    and $_fetch
 end
 function fish_user_key_bindings
     # Das zwingt Fish, die Vi-Bindings zu laden

@@ -38,10 +38,24 @@ COMPONENTS=(
   "quickshell|$DOTFILES_SRC/quickshell|$HOME/.config/quickshell"
   "yazi|$DOTFILES_SRC/yazi|$HOME/.config/yazi"
   "nvim|nvim-branch|$HOME/.config/nvim"
+  "mimeapps|$DOTFILES_SRC/mimeapps.list|$HOME/.config/mimeapps.list"
 )
 
 TERM_COMPONENTS=(kitty fish starship tmux fastfetch yazi nvim)
 TERM_PACKAGES=(kitty fish starship tmux fastfetch yazi neovim git)
+
+HYPR_COMPONENTS=(hypr waybar swaync wlogout rofi mimeapps)
+
+# Define packages: "DisplayName|Source|PkgName|PostHook"
+PACKAGES=(
+  "rbw|pacman|rbw|post:rbw setup"
+  "deezer|yay|deezer-enhanced-bin|"
+  "qutebrowser|pacman|qutebrowser|"
+  "omarchy-fish|pacman|omarchy-fish|"
+  "kitty|pacman|kitty|"
+  "yazi|pacman|yazi|"
+  "equibop|yay|equibop|"
+)
 
 add_component_if_missing() {
   local candidate="$1"
@@ -67,6 +81,73 @@ install_terminal_packages() {
   info "Installing terminal packages via pacman..."
   sudo pacman -S --needed "${packages[@]}"
   success "Terminal packages installed."
+}
+
+cleanup_broken_files() {
+  local files=(
+    "$HOME/.config/fish/conf.d/uv.env.fish"
+  )
+  for f in "${files[@]}"; do
+    if [ -e "$f" ]; then
+      # Only remove if the sourced file doesn't exist
+      local src_file
+      src_file=$(grep -oP 'source "\K[^"]+' "$f" 2>/dev/null | head -1)
+      if [ -n "$src_file" ] && [ ! -e "$(eval echo "$src_file")" ]; then
+        warn "Removing broken file: $f (sources non-existent $src_file)"
+        rm "$f"
+      fi
+    fi
+  done
+}
+
+add_package_if_missing() {
+  local candidate="$1"
+  for existing in "${TO_INSTALL_PKG[@]}"; do
+    if [ "$existing" == "$candidate" ]; then
+      return 0
+    fi
+  done
+  TO_INSTALL_PKG+=("$candidate")
+}
+
+install_package() {
+  local display_name="$1"
+  for pkg_def in "${PACKAGES[@]}"; do
+    IFS="|" read -r name source pkg_name post_hook <<<"$pkg_def"
+    if [ "$name" == "$display_name" ]; then
+      # Check if already installed
+      if command -v "$pkg_name" >/dev/null 2>&1; then
+        info "$pkg_name already installed, skipping."
+        return 0
+      fi
+
+      info "Installing $pkg_name via $source..."
+      case "$source" in
+        pacman)
+          sudo pacman -S --needed --noconfirm "$pkg_name"
+          ;;
+        yay)
+          if ! command -v yay >/dev/null 2>&1; then
+            error "yay is not installed. Cannot install $pkg_name."
+          fi
+          yay -S --needed --noconfirm "$pkg_name"
+          ;;
+        *)
+          error "Unknown package source: $source"
+          ;;
+      esac
+      success "Installed $pkg_name."
+
+      # Run post-hook if specified
+      if [ -n "$post_hook" ]; then
+        local hook_cmd="${post_hook#post:}"
+        info "Running post-install: $hook_cmd"
+        eval "$hook_cmd"
+      fi
+      return 0
+    fi
+  done
+  error "Package '$display_name' not found."
 }
 
 backup_and_link() {
@@ -130,24 +211,6 @@ install_nvim() {
   success "Cloned nvim branch to $nvim_target"
 }
 
-confirm_installation() {
-  local components=("$@")
-
-  info "The following components will be installed:"
-  for name in "${components[@]}"; do
-    echo "  - $name"
-  done
-
-  read -r -p "Continue? [y/N]: " confirm
-  case "$confirm" in
-  y | Y | yes | YES | Yes) ;;
-  *)
-    warn "Installation aborted."
-    exit 0
-    ;;
-  esac
-}
-
 usage() {
   echo "Usage: $0 [options]"
   echo "Options:"
@@ -155,9 +218,18 @@ usage() {
     IFS="|" read -r name src dest <<<"$comp"
     echo "  --${name}        Install ${name} config"
   done
-  echo "  -t, --term    Install all terminal related configs and required packages"
-  echo "  -a, --all     Install all configs"
-  echo "  -h, --help    Show this help"
+  echo "  -t, --term         Install all terminal related configs and required packages"
+  echo "  --hypr             Install Hyprland configs (hypr, waybar, swaync, wlogout, rofi, mimeapps)"
+  echo "  --packages <list>  Install packages (comma-separated, e.g. --packages rbw,deezer)"
+  echo "  --all-packages     Install all packages"
+  echo "  -a, --all          Install all configs"
+  echo "  -h, --help         Show this help"
+  echo ""
+  echo "Available packages:"
+  for pkg_def in "${PACKAGES[@]}"; do
+    IFS="|" read -r name source pkg_name post_hook <<<"$pkg_def"
+    echo "  $name ($source: $pkg_name)"
+  done
   exit 1
 }
 
@@ -168,7 +240,10 @@ fi
 
 INSTALL_ALL=false
 INSTALL_TERM=false
+INSTALL_HYPR=false
+INSTALL_ALL_PACKAGES=false
 TO_INSTALL=()
+TO_INSTALL_PKG=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -179,6 +254,21 @@ while [[ $# -gt 0 ]]; do
   --term | -t)
     INSTALL_TERM=true
     shift
+    ;;
+  --hypr)
+    INSTALL_HYPR=true
+    shift
+    ;;
+  --all-packages)
+    INSTALL_ALL_PACKAGES=true
+    shift
+    ;;
+  --packages)
+    IFS="," read -ra pkg_list <<<"$2"
+    for p in "${pkg_list[@]}"; do
+      add_package_if_missing "$p"
+    done
+    shift 2
     ;;
   --help | -h) usage ;;
   --*)
@@ -215,18 +305,60 @@ if [ "$INSTALL_TERM" = true ]; then
   done
 fi
 
-if [ "${#TO_INSTALL[@]}" -eq 0 ]; then
-  error "No components selected."
+if [ "$INSTALL_HYPR" = true ]; then
+  for component in "${HYPR_COMPONENTS[@]}"; do
+    add_component_if_missing "$component"
+  done
 fi
 
-confirm_installation "${TO_INSTALL[@]}"
+if [ "$INSTALL_ALL_PACKAGES" = true ]; then
+  for pkg_def in "${PACKAGES[@]}"; do
+    IFS="|" read -r name source pkg_name post_hook <<<"$pkg_def"
+    add_package_if_missing "$name"
+  done
+fi
+
+if [ "${#TO_INSTALL[@]}" -eq 0 ] && [ "${#TO_INSTALL_PKG[@]}" -eq 0 ]; then
+  error "No components or packages selected."
+fi
+
+# Confirm components
+if [ "${#TO_INSTALL[@]}" -gt 0 ]; then
+  info "The following components will be installed:"
+  for name in "${TO_INSTALL[@]}"; do
+    echo "  - $name"
+  done
+fi
+
+# Confirm packages
+if [ "${#TO_INSTALL_PKG[@]}" -gt 0 ]; then
+  info "The following packages will be installed:"
+  for name in "${TO_INSTALL_PKG[@]}"; do
+    echo "  - $name"
+  done
+fi
+
+read -r -p "Continue? [y/N]: " confirm
+case "$confirm" in
+y | Y | yes | YES | Yes) ;;
+*)
+  warn "Installation aborted."
+  exit 0
+  ;;
+esac
 
 if [ "$INSTALL_TERM" = true ]; then
   install_terminal_packages "${TERM_PACKAGES[@]}"
 fi
 
+cleanup_broken_files
+
 for name in "${TO_INSTALL[@]}"; do
   install_component "$name"
+done
+
+for name in "${TO_INSTALL_PKG[@]}"; do
+  install_package "$name"
 done
 
 success "Configuration finished!"

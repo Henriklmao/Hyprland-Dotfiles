@@ -2,21 +2,14 @@
 hl.monitor({
   output = "DP-1",
   mode = "1920x1200@59.95",
-  position = "-1920x-1140",
+  position = "1920x0",
   scale = 1,
   transform = 0
 })
 hl.monitor({
   output = "DP-2",
   mode = "1920x1080@60",
-  position = "0x-1080",
-  scale = 1,
-  transform = 0
-})
-hl.monitor({
-  output = "HDMI-A-1",
-  mode = "1920x1080@60",
-  position = "-3840x-1080",
+  position = "3840x60",
   scale = 1,
   transform = 0
 })
@@ -24,8 +17,15 @@ hl.monitor({
   output = "DP-3",
   disabled = true
 })
+hl.monitor({
+  output = "HDMI-A-1",
+  mode = "1920x1080@60",
+  position = "0x60",
+  scale = 1,
+  transform = 0
+})
 
 -- Workspace assignments
 hl.workspace_rule({ workspace = "1", monitor = "DP-1", default = true })
 hl.workspace_rule({ workspace = "2", monitor = "DP-2", default = true })
-hl.workspace_rule({ workspace = "3", monitor = "HDMI-A-1", default = true })
+hl.workspace_rule({ workspace = "4", monitor = "HDMI-A-1", default = true })
