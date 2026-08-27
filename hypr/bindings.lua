@@ -61,3 +61,5 @@ hl.unbind("SUPER + SHIFT + X")
 o.bind("SUPER + SHIFT + X", "Twitter", 'qutebrowser "https://x.com/"')
 hl.unbind("SUPER + DELETE")
 o.bind("SUPER + DELETE", "Color picker", "pkill hyprpicker || hyprpicker -a")
+-- fast note todo plugin
+o.bind("SUPER + SHIFT + s", "Fast-note-todo", 'omarchy-shell io.github.viganogabriele.fast-note-todo open')
