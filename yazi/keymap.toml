@@ -4,6 +4,11 @@
 #:schema https://yazi-rs.github.io/schemas/keymap.json
 
 [mgr]
+# Ouch.yazi compress keybind:
+[[mgr.prepend_keymap]]
+on = ["C"]
+run = "plugin ouch"
+desc = "Compress with ouch"
 
 keymap = [
   { on = "<Esc>", run = "escape", desc = "Exit visual mode, clear selection, or cancel search" },
