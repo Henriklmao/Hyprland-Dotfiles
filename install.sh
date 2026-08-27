@@ -211,6 +211,17 @@ install_nvim() {
   success "Cloned nvim branch to $nvim_target"
 }
 
+install_qute_readability() {
+  if ! command -v npm >/dev/null 2>&1; then
+    warn "npm not available. Skipping @mozilla/readability installation."
+    return 0
+  fi
+
+  info "Installing @mozilla/readability and dependencies via npm..."
+  npm install -g @mozilla/readability jsdom qutejs
+  success "Installed @mozilla/readability, jsdom, and qutejs."
+}
+
 usage() {
   echo "Usage: $0 [options]"
   echo "Options:"
@@ -219,7 +230,8 @@ usage() {
     echo "  --${name}        Install ${name} config"
   done
   echo "  -t, --term         Install all terminal related configs and required packages"
-  echo "  --hypr             Install Hyprland configs (hypr, waybar, swaync, wlogout, rofi, mimeapps)"
+  echo "  --qute             Install qutebrowser config and @mozilla/readability
+  --hypr             Install Hyprland configs (hypr, waybar, swaync, wlogout, rofi, mimeapps)"
   echo "  --packages <list>  Install packages (comma-separated, e.g. --packages rbw,deezer)"
   echo "  --all-packages     Install all packages"
   echo "  -a, --all          Install all configs"
@@ -257,6 +269,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --hypr)
     INSTALL_HYPR=true
+    shift
+    ;;
+  --qute)
+    add_component_if_missing "qutebrowser"
     shift
     ;;
   --all-packages)
@@ -355,6 +371,14 @@ cleanup_broken_files
 
 for name in "${TO_INSTALL[@]}"; do
   install_component "$name"
+done
+
+# Install @mozilla/readability if qutebrowser is being installed
+for name in "${TO_INSTALL[@]}"; do
+  if [ "$name" == "qutebrowser" ]; then
+    install_qute_readability
+    break
+  fi
 done
 
 for name in "${TO_INSTALL_PKG[@]}"; do

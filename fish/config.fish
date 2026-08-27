@@ -23,6 +23,8 @@ if status is-interactive
     # Bun
     set -x BUN_INSTALL "$HOME/.bun"
     set -x PATH "$BUN_INSTALL/bin:$PATH"
+    # Node global modules
+    set -gx NODE_PATH (npm root -g)
     # Cargo
     set -gx PATH $HOME/.cargo/bin $PATH
     set -e WINEDLLOVERRIDES # I don't know where it comes from, but it breaks wine.

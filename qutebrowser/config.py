@@ -50,6 +50,7 @@ c.url.open_base_url = True
 c.aliases["read"] = "spawn --userscript readability-js"
 c.aliases["cedit"] = "config-edit"
 c.aliases["do"] = "download-open"
+c.aliases["dc"] = "download-clear"
 # This is here so configs done via the GUI are still loaded.
 # Remove it to not load settings done via the GUI.
 config.load_autoconfig(True)
@@ -1731,7 +1732,12 @@ c.editor.command = ["kitty", "--class", "qutebrowser-editor", "-e", "nvim", "{fi
 # Additional environment variables to set. Setting an environment
 # variable to null/None will unset it.
 # Type: Dict
-# c.qt.environ = {}
+import subprocess
+try:
+    _npm_root = subprocess.check_output(["npm", "root", "-g"], text=True).strip()
+except Exception:
+    _npm_root = ""
+c.qt.environ = {"NODE_PATH": _npm_root} if _npm_root else {}
 
 # Force a Qt platform to use. This sets the `QT_QPA_PLATFORM`
 # environment variable and is useful to force using the XCB plugin when
@@ -2314,7 +2320,7 @@ c.url.yank_ignored_parameters = [
 # config.bind('<Ctrl-T>', 'open -t')
 # config.bind('<Ctrl-Tab>', 'tab-focus last')
 # config.bind('<Ctrl-U>', 'scroll-page 0 -0.5')
-# config.bind('<Ctrl-V>', 'mode-enter passthrough')
+config.bind("<Ctrl-Alt-V>", "mode-enter passthrough")
 # config.bind('<Ctrl-W>', 'tab-close')
 # config.bind('<Ctrl-X>', 'navigate decrement')
 # config.bind('<Ctrl-^>', 'tab-focus last')
