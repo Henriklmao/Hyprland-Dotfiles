@@ -73,11 +73,19 @@ function vi -d "Open nvim in current dir tmux session"
 end
 # VPS
 function vps -d "Connect to VPS"
-    tmux_session vps ssh root@217.154.224.224
+    if set -q TMUX
+        ssh root@217.154.224.224
+    else
+        tmux_session vps ssh root@217.154.224.224
+    end
 end
 # Indigo
 function indigo -d "Connect to Indigo"
-    tmux_session indigo ssh root@87.106.191.54
+    if set -q TMUX
+        ssh root@87.106.191.54
+    else
+        tmux_session indigo ssh root@87.106.191.54
+    end
 end
 # GCloud-CLI
 # The next line updates PATH for the Google Cloud SDK.
