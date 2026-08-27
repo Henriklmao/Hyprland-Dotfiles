@@ -39,9 +39,10 @@ COMPONENTS=(
   "yazi|$DOTFILES_SRC/yazi|$HOME/.config/yazi"
   "nvim|nvim-branch|$HOME/.config/nvim"
   "mimeapps|$DOTFILES_SRC/mimeapps.list|$HOME/.config/mimeapps.list"
+  "bashrc|$DOTFILES_SRC/bashrc|$HOME/.bashrc"
 )
 
-TERM_COMPONENTS=(kitty fish starship tmux fastfetch yazi nvim)
+TERM_COMPONENTS=(kitty fish starship tmux fastfetch yazi nvim bashrc)
 TERM_PACKAGES=(kitty fish starship tmux fastfetch yazi neovim git)
 
 HYPR_COMPONENTS=(hypr waybar swaync wlogout rofi mimeapps)
