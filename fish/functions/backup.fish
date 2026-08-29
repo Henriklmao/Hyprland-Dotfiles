@@ -1,5 +1,5 @@
 function backup
-    set -l REPO /mnt/ssd-vault/restic-repo
+    set -l REPO (test (hostname) = surfacebtw; and echo /mnt/Massenspeicher/restic-repo; or echo /mnt/ssd-vault/restic-repo)
     set -l PW ~/.config/restic/password
 
     if test (count $argv) -eq 0
