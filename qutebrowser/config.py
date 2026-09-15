@@ -1230,7 +1230,7 @@ c.content.dns_prefetch = True
 # handler is used. Any `{}` in the string will be expanded to the
 # filename, else the filename will be appended.
 # Type: String
-# c.downloads.open_dispatcher = None
+c.downloads.open_dispatcher = "kitty -e yazi {}"
 
 # Where to show the downloaded files.
 # Type: VerticalPosition
@@ -1733,6 +1733,7 @@ c.editor.command = ["kitty", "--class", "qutebrowser-editor", "-e", "nvim", "{fi
 # variable to null/None will unset it.
 # Type: Dict
 import subprocess
+
 try:
     _npm_root = subprocess.check_output(["npm", "root", "-g"], text=True).strip()
 except Exception:
