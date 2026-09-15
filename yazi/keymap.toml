@@ -155,6 +155,10 @@ desc = "Go ~/Projects"
 on = ["g", "n"]
 run = "cd /mnt/NAS"
 desc = "Go /mnt/NAS"
+[[mgr.prepend_keymap]]
+on = ["g", "s"]
+run = "cd /mnt/ssd-vault"
+desc = "Go /mnt/ssd-vault"
 
 # Tasks
 [[mgr.prepend_keymap]]
@@ -249,16 +253,34 @@ keymap = [
 
   # Mode
   { on = "i", run = "insert", desc = "Enter insert mode" },
-  { on = "I", run = ["move first-char", "insert"], desc = "Move to the BOL, and enter insert mode" },
+  { on = "I", run = [
+    "move first-char",
+    "insert",
+  ], desc = "Move to the BOL, and enter insert mode" },
   { on = "a", run = "insert --append", desc = "Enter append mode" },
-  { on = "A", run = ["move eol", "insert --append"], desc = "Move to the EOL, and enter append mode" },
+  { on = "A", run = [
+    "move eol",
+    "insert --append",
+  ], desc = "Move to the EOL, and enter append mode" },
   { on = "v", run = "visual", desc = "Enter visual mode" },
   { on = "r", run = "replace", desc = "Replace a single character" },
 
   # Selection
-  { on = "V", run = ["move bol", "visual", "move eol"], desc = "Select from BOL to EOL" },
-  { on = "<C-A>", run = ["move eol", "visual", "move bol"], desc = "Select from EOL to BOL" },
-  { on = "<C-E>", run = ["move bol", "visual", "move eol"], desc = "Select from BOL to EOL" },
+  { on = "V", run = [
+    "move bol",
+    "visual",
+    "move eol",
+  ], desc = "Select from BOL to EOL" },
+  { on = "<C-A>", run = [
+    "move eol",
+    "visual",
+    "move bol",
+  ], desc = "Select from EOL to BOL" },
+  { on = "<C-E>", run = [
+    "move bol",
+    "visual",
+    "move eol",
+  ], desc = "Select from BOL to EOL" },
 
   # Character-wise movement
   { on = "h", run = "move -1", desc = "Move back a character" },
@@ -306,18 +328,37 @@ keymap = [
 
   # Cut/Yank/Paste
   { on = "d", run = "delete --cut", desc = "Cut selected characters" },
-  { on = "D", run = ["delete --cut", "move eol"], desc = "Cut until EOL" },
+  { on = "D", run = [
+    "delete --cut",
+    "move eol",
+  ], desc = "Cut until EOL" },
   { on = "c", run = "delete --cut --insert", desc = "Cut selected characters, and enter insert mode" },
-  { on = "C", run = ["delete --cut --insert", "move eol"], desc = "Cut until EOL, and enter insert mode" },
-  { on = "s", run = ["delete --cut --insert", "move 1"], desc = "Cut current character, and enter insert mode" },
-  { on = "S", run = ["move bol", "delete --cut --insert", "move eol"], desc = "Cut from BOL until EOL, and enter insert mode" },
-  { on = "x", run = ["delete --cut", "move 1 --in-operating"], desc = "Cut current character" },
+  { on = "C", run = [
+    "delete --cut --insert",
+    "move eol",
+  ], desc = "Cut until EOL, and enter insert mode" },
+  { on = "s", run = [
+    "delete --cut --insert",
+    "move 1",
+  ], desc = "Cut current character, and enter insert mode" },
+  { on = "S", run = [
+    "move bol",
+    "delete --cut --insert",
+    "move eol",
+  ], desc = "Cut from BOL until EOL, and enter insert mode" },
+  { on = "x", run = [
+    "delete --cut",
+    "move 1 --in-operating",
+  ], desc = "Cut current character" },
   { on = "y", run = "yank", desc = "Copy selected characters" },
   { on = "p", run = "paste", desc = "Paste copied characters after the cursor" },
   { on = "P", run = "paste --before", desc = "Paste copied characters before the cursor" },
 
   # Undo/Redo/Casefy
-  { on = "u", run = ["undo", "casefy lower"], desc = "Undo, or lowercase if in visual mode" },
+  { on = "u", run = [
+    "undo",
+    "casefy lower",
+  ], desc = "Undo, or lowercase if in visual mode" },
   { on = "U", run = "casefy upper", desc = "Uppercase" },
   { on = "<C-r>", run = "redo", desc = "Redo the last operation" },
 
@@ -353,7 +394,10 @@ keymap = [
 keymap = [
   { on = "<C-c>", run = "close", desc = "Cancel completion" },
   { on = "<Tab>", run = "close --submit", desc = "Submit the completion" },
-  { on = "<Enter>", run = ["close --submit", "input:close --submit"], desc = "Complete and submit the input" },
+  { on = "<Enter>", run = [
+    "close --submit",
+    "input:close --submit",
+  ], desc = "Complete and submit the input" },
 
   { on = "<A-k>", run = "arrow prev", desc = "Previous item" },
   { on = "<A-j>", run = "arrow next", desc = "Next item" },
