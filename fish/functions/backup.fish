@@ -3,7 +3,7 @@ function backup
     set -l PW ~/.config/restic/password
 
     if test (count $argv) -eq 0
-        backup-ssd
+        backup-ssd.sh
         return
     end
 
@@ -26,6 +26,8 @@ function backup
             RESTIC_REPOSITORY=$REPO RESTIC_PASSWORD_FILE=$PW restic unlock
         case size
             RESTIC_REPOSITORY=$REPO RESTIC_PASSWORD_FILE=$PW restic stats
+        case passwd password changepw
+            RESTIC_REPOSITORY=$REPO RESTIC_PASSWORD_FILE=$PW restic key passwd
         case help '*'
             echo "backup          - Starte Backup"
             echo "backup snap     - Letzte 10 Snapshots"
@@ -35,5 +37,6 @@ function backup
             echo "backup diff     - Änderungen anzeigen"
             echo "backup unlock   - Locks entfernen"
             echo "backup size     - Statistiken"
+            echo "backup passwd   - Repository-Passwort ändern"
     end
 end
