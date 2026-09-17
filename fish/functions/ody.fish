@@ -1,4 +1,8 @@
 function ody --description 'Starts or attaches odysseus server in a tmux session.'
+    if test (hostname) = surfacebtw
+        echo "Is nicht!"
+        return 1
+    end
     if ss -tulpn 2>/dev/null | grep -q ":7000 "
         if tmux has-session -t odysseus 2>/dev/null
             tmux attach-session -t odysseus
