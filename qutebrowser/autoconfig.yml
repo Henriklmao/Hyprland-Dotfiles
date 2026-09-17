@@ -27,6 +27,7 @@ settings:
   content.notifications.enabled:
     http://localhost:7000: true
     https://cloudpanel.ionos.de: false
+    https://gemini.google.com: true
     https://www.youtube.com: false
   qt.environ:
     global:

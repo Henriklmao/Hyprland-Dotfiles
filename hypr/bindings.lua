@@ -53,8 +53,6 @@ hl.unbind("SUPER + SHIFT + O")
 o.bind("SUPER + SHIFT + O", "Obsidian", 'omarchy-launch-or-focus "obsidian$" "uwsm-app -- obsidian"')
 hl.unbind("SUPER + SHIFT + E")
 o.bind("SUPER + SHIFT + E", "E-mail", "uwsm-app -- thunderbird")
-hl.unbind("SUPER + SHIFT + A")
-o.bind("SUPER + SHIFT + A", "Odysseus", "qutebrowser http://localhost:7000/")
 hl.unbind("SUPER + SHIFT + Y")
 o.bind("SUPER + SHIFT + Y", "YouTube", 'qutebrowser "https://youtube.com/"')
 hl.unbind("SUPER + SHIFT + X")
@@ -62,4 +60,11 @@ o.bind("SUPER + SHIFT + X", "Twitter", 'qutebrowser "https://x.com/"')
 hl.unbind("SUPER + DELETE")
 o.bind("SUPER + DELETE", "Color picker", "pkill hyprpicker || hyprpicker -a")
 -- fast note todo plugin
-o.bind("SUPER + SHIFT + s", "Fast-note-todo", 'omarchy-shell io.github.viganogabriele.fast-note-todo open')
+o.bind("SUPER + SHIFT + s", "Fast-note-todo", "omarchy-shell io.github.viganogabriele.fast-note-todo open")
+-- AI Chatbot binding
+hl.unbind("SUPER + SHIFT + A")
+if IS_SURFACE then
+	o.bind("SUPER + SHIFT + A", "Chatbot: Gemini", "qutebrowser https://gemini.google.com/app")
+else
+	o.bind("SUPER + SHIFT + A", "Odysseus", "qutebrowser http://localhost:7000/")
+end
