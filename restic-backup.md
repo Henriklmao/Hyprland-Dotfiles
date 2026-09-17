@@ -1,13 +1,13 @@
 # Restic Backup Setup
 
-Restic-Backup mit lokalem Repository, Systemd-Timer und Fish-Funktion.
+Restic backup with local repository, systemd timer, and fish function.
 
-## Voraussetzungen
+## Prerequisites
 
-- `restic` installiert (`sudo pacman -S restic`)
-- Ziel-Pfad erreichbar (lokal oder eingebunden)
+- `restic` installed (`sudo pacman -S restic`)
+- Target path accessible (local or mounted)
 
-## Schritt 1: Passwort generieren
+## Step 1: Generate Password
 
 ```bash
 mkdir -p ~/.config/restic
@@ -15,10 +15,10 @@ chmod 700 ~/.config/restic
 head -c 32 /dev/urandom | base64 > ~/.config/restic/password
 chmod 600 ~/.config/restic/password
 cat ~/.config/restic/password
-# → Passwort notieren!
+# → Save this password somewhere safe!
 ```
 
-## Schritt 2: Ausschlussdatei erstellen
+## Step 2: Create Exclude File
 
 ```bash
 cat > ~/.config/restic/excludes.txt << 'EOF'
@@ -32,19 +32,19 @@ EOF
 chmod 600 ~/.config/restic/excludes.txt
 ```
 
-## Schritt 3: Backup-Skript erstellen
+## Step 3: Create Backup Script
 
 ```bash
 cat > ~/.local/bin/backup-ssd.sh << 'SCRIPT'
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ─── ANPASSEN ─────────────────────────────────────────────────
-REPO="/Pfad/zum/Repository"          # ← Hier ändern
+# ─── CONFIGURE ────────────────────────────────────────────────
+REPO="/path/to/repository"             # ← Change this
 PASSWORD_FILE="$HOME/.config/restic/password"
 EXCLUDES="$HOME/.config/restic/excludes.txt"
 LOGFILE="$HOME/.local/log/backup-restic.log"
-SOURCE="$HOME/"                      # ← Quelle anpassen
+SOURCE="$HOME/"                        # ← Change source if needed
 # ─────────────────────────────────────────────────────────────
 
 export RESTIC_REPOSITORY="$REPO"
@@ -62,15 +62,15 @@ mkdir -p "$(dirname "$LOGFILE")" "$RESTIC_CACHE_DIR"
 exec > >(tee -a "$LOGFILE") 2>&1
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "  Backup gestartet: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "  Backup started: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "═══════════════════════════════════════════════════════════════"
 
-notify "normal" "Backup" "Backup gestartet..."
+notify "normal" "Backup" "Backup started..."
 
-# Mount-Check (nur bei externen Zielen)
-# mountpoint -q /Pfad/zum/Mount || { notify "critical" "Backup" "Mount fehlt!"; exit 1; }
+# Mount check (only for external targets)
+# mountpoint -q /path/to/mount || { notify "critical" "Backup" "Mount missing!"; exit 1; }
 
-# Repository initialisieren falls nötig
+# Initialize repository if needed
 [[ ! -d "$REPO" ]] && restic init
 
 # Backup
@@ -79,8 +79,8 @@ restic backup "$SOURCE" --exclude-file="$EXCLUDES" --compression=auto --tag "dai
 BACKUP_END=$(date +%s)
 BACKUP_DURATION=$(( BACKUP_END - BACKUP_START ))
 
-[[ "${BACKUP_EXIT:-0}" -eq 3 ]] && echo "⚠ Warnungen (Dateien nicht lesbar)"
-[[ "${BACKUP_EXIT:-0}" -gt 3 ]] && notify "critical" "Backup" "Fehler!" && exit "${BACKUP_EXIT:-1}"
+[[ "${BACKUP_EXIT:-0}" -eq 3 ]] && echo "⚠ Warnings (some files not readable)"
+[[ "${BACKUP_EXIT:-0}" -gt 3 ]] && notify "critical" "Backup" "Failed!" && exit "${BACKUP_EXIT:-1}"
 
 echo "✓ Backup: $(( BACKUP_DURATION / 60 ))m $(( BACKUP_DURATION % 60 ))s"
 
@@ -91,21 +91,23 @@ restic forget --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --keep-yearly 2 --
 restic snapshots --latest 5
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "  ✓ Fertig: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "  ✓ Done: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "═══════════════════════════════════════════════════════════════"
 
-notify "normal" "Backup" "Fertig! ($(( BACKUP_DURATION / 60 ))m)"
+notify "normal" "Backup" "Done! ($(( BACKUP_DURATION / 60 ))m)"
 SCRIPT
 
 chmod +x ~/.local/bin/backup-ssd.sh
 ```
 
-## Schritt 4: Beachte, es existiert bereits eine Fish-Funktion dank des Dotfile Repos
+## Step 4: Fish Function
+
+Note: A fish function already exists in this dotfiles repo.
 
 ```bash
 cat > ~/.config/fish/functions/backup.fish << 'FISH'
 function backup
-    set -l REPO "/Pfad/zum/Repository"   # ← Gleich wie im Skript
+    set -l REPO "/path/to/repository"   # ← Same as in the script
     set -l PW ~/.config/restic/password
 
     if test (count $argv) -eq 0
@@ -133,7 +135,12 @@ end
 FISH
 ```
 
-## Schritt 5: Systemd-Timer (optional)
+## Step 5: Systemd Timer (optional)
+
+> **Important:** Run the script directly, **not** via `tmux new-session -d`.
+> tmux exits immediately (exit 0), systemd thinks "success" — but the actual
+> backup inside tmux fails silently. The script already handles logging
+> (`~/.local/log/backup-restic.log`) and desktop notifications, so tmux is unnecessary.
 
 ```bash
 # Service
@@ -144,7 +151,7 @@ After=local-fs.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/tmux new-session -d -s backup %h/.local/bin/backup-ssd.sh
+ExecStart=%h/.local/bin/backup-ssd.sh
 TimeoutStartSec=7200
 Nice=19
 IOSchedulingClass=idle
@@ -153,7 +160,7 @@ EOF
 # Timer
 cat > ~/.config/systemd/user/backup.timer << EOF
 [Unit]
-Description=Backup – täglich 03:00
+Description=Backup – daily at 03:00
 
 [Timer]
 OnCalendar=*-*-* 03:00:00
@@ -164,31 +171,44 @@ RandomizedDelaySec=300
 WantedBy=timers.target
 EOF
 
-# Aktivieren
+# Enable
 systemctl --user daemon-reload
 systemctl --user enable --now backup.timer
 systemctl --user list-timers | grep backup
 ```
 
-## Nutzung
+### Debugging
 
 ```bash
-backup              # Starte Backup
-backup snap         # Zeige letzte 10 Snapshots
-backup ls           # Alle Snapshots
-backup restore <id> # Wiederherstellen
-backup check        # Repository prüfen
-backup size         # Statistiken
-backup unlock       # Locks entfernen
+# Check service status
+systemctl --user status backup.service
+
+# Logs from recent runs
+journalctl --user -u backup.service --since "7 days ago"
+
+# Test manually
+systemctl --user start backup.service
+```
+
+## Usage
+
+```bash
+backup              # Start backup
+backup snap         # Show last 10 snapshots
+backup ls           # All snapshots
+backup restore <id> # Restore snapshot
+backup check        # Check repository
+backup size         # Statistics
+backup unlock       # Remove locks
 ```
 
 ## Restore
 
 ```bash
-# Einzelne Datei
-RESTIC_REPOSITORY=/Pfad/zum/Repo RESTIC_PASSWORD_FILE=~/.config/restic/password \
+# Single file
+RESTIC_REPOSITORY=/path/to/repo RESTIC_PASSWORD_FILE=~/.config/restic/password \
     restic latest --target /tmp/restore --include ".bashrc"
 
-# Kompletter Restore
+# Full restore
 backup restore <snapshot-id> /tmp/restore
 ```
