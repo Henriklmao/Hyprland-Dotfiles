@@ -2322,6 +2322,8 @@ c.url.yank_ignored_parameters = [
 # config.bind('<Ctrl-Tab>', 'tab-focus last')
 # config.bind('<Ctrl-U>', 'scroll-page 0 -0.5')
 config.bind("<Ctrl-Alt-V>", "mode-enter passthrough")
+config.unbind("<Ctrl-v>", mode="normal")
+config.bind("<Ctrl-v>", "insert-text {clipboard}", mode="normal")
 # config.bind('<Ctrl-W>', 'tab-close')
 # config.bind('<Ctrl-X>', 'navigate decrement')
 # config.bind('<Ctrl-^>', 'tab-focus last')
