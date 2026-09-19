@@ -5,6 +5,7 @@ if status is-interactive
     alias vi="nvim"
     alias vim="nvim"
     alias pri="prime-agent"
+    alias priu="prime-update"
     alias ol="ollama launch opencode"
     alias e="nautilus ."
     alias se="sudoedit"
