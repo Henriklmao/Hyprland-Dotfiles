@@ -165,7 +165,7 @@ Description=Backup – daily at 03:00
 [Timer]
 OnCalendar=*-*-* 03:00:00
 Persistent=true
-RandomizedDelaySec=300
+AccuracySec=1min
 
 [Install]
 WantedBy=timers.target
