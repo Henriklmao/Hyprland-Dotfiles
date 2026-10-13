@@ -27,6 +27,7 @@ settings:
     https://plugins.omarchy.org: access-paste
   content.media.audio_capture:
     https://gemini.google.com: true
+    https://opencode.ai: access-paste
   content.notifications.enabled:
     http://localhost:7000: true
     https://cloudpanel.ionos.de: false
