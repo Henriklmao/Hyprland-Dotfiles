@@ -64,7 +64,10 @@ o.bind("SUPER + SHIFT + s", "Fast-note-todo", "omarchy-shell io.github.viganogab
 -- AI Chatbot binding
 hl.unbind("SUPER + SHIFT + A")
 if IS_SURFACE then
-	o.bind("SUPER + SHIFT + A", "Chatbot: Gemini", "qutebrowser https://gemini.google.com/app")
+  o.bind("SUPER + SHIFT + A", "Chatbot: Gemini", "qutebrowser https://gemini.google.com/app")
 else
-	o.bind("SUPER + SHIFT + A", "Odysseus", "qutebrowser http://localhost:7000/")
+  o.bind("SUPER + SHIFT + A", "Odysseus", "qutebrowser http://localhost:7000/")
 end
+-- Omarchy bitwarden binding
+hl.unbind("SUPER + SHIFT + P")
+o.bind("SUPER + SHIFT + P", "Bitwarden", "omarchy shell io.github.elevate08.qs-bitwarden-cli open")
