@@ -33,6 +33,7 @@ COMPONENTS=(
   "fastfetch|$DOTFILES_SRC/fastfetch|$HOME/.config/fastfetch"
   "starship|$DOTFILES_SRC/starship.toml|$HOME/.config/starship.toml"
   "tmux|$DOTFILES_SRC/tmux|$HOME/.config/tmux"
+  "herdr|$DOTFILES_SRC/herdr/config.toml|$HOME/.config/herdr/config.toml"
   "fish|$DOTFILES_SRC/fish|$HOME/.config/fish"
   "qutebrowser|$DOTFILES_SRC/qutebrowser|$HOME/.config/qutebrowser"
   "quickshell|$DOTFILES_SRC/quickshell|$HOME/.config/quickshell"
@@ -42,7 +43,7 @@ COMPONENTS=(
   "bashrc|$DOTFILES_SRC/bashrc|$HOME/.bashrc"
 )
 
-TERM_COMPONENTS=(kitty fish starship tmux fastfetch yazi nvim bashrc)
+TERM_COMPONENTS=(kitty fish starship tmux fastfetch yazi nvim bashrc herdr)
 TERM_PACKAGES=(kitty fish starship tmux fastfetch yazi neovim git)
 
 HYPR_COMPONENTS=(hypr waybar swaync wlogout rofi mimeapps)
