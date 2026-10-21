@@ -22,12 +22,14 @@ settings:
     global: no-3rdparty
   content.javascript.clipboard:
     http://localhost:7000: access-paste
+    https://aur.archlinux.org: access-paste
+    https://docs.github.com: access-paste
     https://gemini.google.com: access-paste
     https://github.com: access-paste
+    https://opencode.ai: access-paste
     https://plugins.omarchy.org: access-paste
   content.media.audio_capture:
     https://gemini.google.com: true
-    https://opencode.ai: access-paste
   content.notifications.enabled:
     http://localhost:7000: true
     https://cloudpanel.ionos.de: false
