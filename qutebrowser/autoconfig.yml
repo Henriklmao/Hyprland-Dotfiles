@@ -9,7 +9,7 @@ settings:
   auto_save.session:
     global: true
   colors.webpage.darkmode.enabled:
-    global: false
+    global: true
   content.blocking.adblock.lists:
     global:
     - https://easylist.to/easylist/easylist.txt
