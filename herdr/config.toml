@@ -105,3 +105,24 @@ delivery = "system"
 
 [experimental]
 kitty_graphics = true
+
+# Agent Usage (usagebar): provider limit above the context meter
+[ui.sidebar.agents]
+row_gap = 0
+rows = [
+  ["state_icon", "$title"],
+  ["agent", "$limit"],
+  ["$context"],
+]
+
+[[keys.command]]
+key = "prefix+shift+b"
+type = "plugin_action"
+command = "usagebar.open-limits"
+description = "Agent Usage: open limits pane"
+
+[[keys.command]]
+key = "ctrl+shift+m"
+type = "plugin_action"
+command = "usagebar.refresh"
+description = "Agent Usage: refresh sidebar meters"
