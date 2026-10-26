@@ -2,6 +2,7 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
     set -g fish_greeting ""
     set -x EDITOR nvim
+    set -gx SSH_AUTH_SOCK $XDG_RUNTIME_DIR/qs-bitwarden-cli/ssh-agent.sock
     alias vi="nvim"
     alias vim="nvim"
     alias pri="prime-agent"
@@ -17,6 +18,7 @@ if status is-interactive
     alias reflect="sudo reflector --country Germany --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
     # Servers
     alias univpn='sudo openvpn --config ~/Documents/uni.ovpn'
+    alias h="herdr"
     alias t="tmux"
     alias tls="tmux ls"
     alias ta="tmux a"
