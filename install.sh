@@ -375,6 +375,11 @@ for name in "${TO_INSTALL[@]}"; do
   install_component "$name"
 done
 
+# Helper scripts inside symlinked dirs need the exec bit (e.g. hypr keybinding launcher)
+if [ -f "$HOME/.config/hypr/herdr-work.sh" ]; then
+  chmod +x "$HOME/.config/hypr/herdr-work.sh"
+fi
+
 # Install @mozilla/readability if qutebrowser is being installed
 for name in "${TO_INSTALL[@]}"; do
   if [ "$name" == "qutebrowser" ]; then
