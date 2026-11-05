@@ -64,10 +64,17 @@ o.bind("SUPER + SHIFT + s", "Fast-note-todo", "omarchy-shell io.github.viganogab
 -- AI Chatbot binding
 hl.unbind("SUPER + SHIFT + A")
 if IS_SURFACE then
-  o.bind("SUPER + SHIFT + A", "Chatbot: Gemini", "qutebrowser https://gemini.google.com/app")
+  o.bind("SUPER + SHIFT + A", "Chatbot: Gemini", "firefox https://gemini.google.com/app")
 else
-  o.bind("SUPER + SHIFT + A", "Odysseus", "qutebrowser http://localhost:7000/")
+  o.bind("SUPER + SHIFT + A", "Odysseus", "firefox http://localhost:7000/")
 end
 -- Omarchy bitwarden binding
 hl.unbind("SUPER + SHIFT + P")
 o.bind("SUPER + SHIFT + P", "Bitwarden", "omarchy shell io.github.elevate08.qs-bitwarden-cli open")
+
+-- Dictation keys from before Alt + Space and Right Alt became the defaults.
+-- Remove these lines to give the keys back to applications.
+if o.dictation_installed and o.dictation_installed() then
+  o.bind("SUPER + CTRL + X", "Toggle dictation", "omarchy-dictation toggle")
+  o.bind_hold("F9", "Start dictation (push-to-talk)", "omarchy-dictation start", "Stop dictation (push-to-talk)", "omarchy-dictation stop")
+end
