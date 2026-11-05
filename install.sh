@@ -36,12 +36,17 @@ COMPONENTS=(
   "herdr|$DOTFILES_SRC/herdr/config.toml|$HOME/.config/herdr/config.toml"
   "fish|$DOTFILES_SRC/fish|$HOME/.config/fish"
   "qutebrowser|$DOTFILES_SRC/qutebrowser|$HOME/.config/qutebrowser"
+  "firefox|$DOTFILES_SRC/firefox|$HOME/.config/mozilla/firefox"
   "quickshell|$DOTFILES_SRC/quickshell|$HOME/.config/quickshell"
   "yazi|$DOTFILES_SRC/yazi|$HOME/.config/yazi"
   "nvim|nvim-branch|$HOME/.config/nvim"
   "mimeapps|$DOTFILES_SRC/mimeapps.list|$HOME/.config/mimeapps.list"
   "bashrc|$DOTFILES_SRC/bashrc|$HOME/.bashrc"
 )
+
+# Components that are kept in the repo but intentionally skipped by --all.
+# Install them explicitly with their own flag (e.g. --qutebrowser or --qute).
+ALL_EXCLUDED=(qutebrowser)
 
 TERM_COMPONENTS=(kitty fish starship tmux fastfetch yazi nvim bashrc herdr)
 TERM_PACKAGES=(kitty fish starship tmux fastfetch yazi neovim git)
@@ -184,6 +189,8 @@ install_component() {
       info "Installing $name..."
       if [ "$name" == "nvim" ]; then
         install_nvim
+      elif [ "$name" == "firefox" ]; then
+        install_firefox
       else
         backup_and_link "$name" "$src" "$dest"
       fi
@@ -213,6 +220,62 @@ install_nvim() {
   success "Cloned nvim branch to $nvim_target"
 }
 
+find_firefox_profile() {
+  local ff_root=""
+  local candidate
+  for candidate in "$HOME/.config/mozilla/firefox" "$HOME/.mozilla/firefox"; do
+    if [ -f "$candidate/profiles.ini" ]; then
+      ff_root="$candidate"
+      break
+    fi
+  done
+  [ -n "$ff_root" ] || return 0
+
+  local profile_path=""
+  # Prefer the default profile from the [Install...] section.
+  profile_path=$(awk -F= '
+    /^\[Install/ { in_install=1; next }
+    /^\[/        { in_install=0 }
+    in_install && $1 == "Default" { print substr($0, index($0, "=") + 1); exit }
+  ' "$ff_root/profiles.ini")
+
+  # Fall back to the first profile listed.
+  if [ -z "$profile_path" ]; then
+    profile_path=$(awk -F= '
+      /^\[Profile/ { in_profile=1; next }
+      /^\[/        { in_profile=0 }
+      in_profile && $1 == "Path" { print substr($0, index($0, "=") + 1); exit }
+    ' "$ff_root/profiles.ini")
+  fi
+
+  [ -n "$profile_path" ] || return 0
+
+  case "$profile_path" in
+  /*) printf '%s\n' "$profile_path" ;;
+  *) printf '%s\n' "$ff_root/$profile_path" ;;
+  esac
+}
+
+install_firefox() {
+  local profile_dir
+  profile_dir=$(find_firefox_profile)
+
+  if [ -z "$profile_dir" ] || [ ! -d "$profile_dir" ]; then
+    warn "No Firefox profile found."
+    warn "Start Firefox once, then run: ./install.sh --firefox"
+    return 0
+  fi
+
+  info "Using Firefox profile: $profile_dir"
+
+  backup_and_link "firefox chrome" "$DOTFILES_SRC/firefox/chrome" "$profile_dir/chrome"
+  backup_and_link "firefox user.js" "$DOTFILES_SRC/firefox/user.js" "$profile_dir/user.js"
+
+  if pgrep -x firefox >/dev/null 2>&1; then
+    warn "Firefox is running. Restart it so user.js and the CSS take effect."
+  fi
+}
+
 install_qute_readability() {
   if ! command -v npm >/dev/null 2>&1; then
     warn "npm not available. Skipping @mozilla/readability installation."
@@ -232,8 +295,8 @@ usage() {
     echo "  --${name}        Install ${name} config"
   done
   echo "  -t, --term         Install all terminal related configs and required packages"
-  echo "  --qute             Install qutebrowser config and @mozilla/readability
-  --hypr             Install Hyprland configs (hypr, waybar, swaync, wlogout, rofi, mimeapps)"
+  echo "  --qute             Install qutebrowser config and @mozilla/readability (excluded from --all)"
+  echo "  --hypr             Install Hyprland configs (hypr, waybar, swaync, wlogout, rofi, mimeapps)"
   echo "  --packages <list>  Install packages (comma-separated, e.g. --packages rbw,deezer)"
   echo "  --all-packages     Install all packages"
   echo "  -a, --all          Install all configs"
@@ -313,7 +376,14 @@ if [ "$INSTALL_ALL" = true ]; then
   TO_INSTALL=()
   for comp in "${COMPONENTS[@]}"; do
     IFS="|" read -r name src dest <<<"$comp"
-    add_component_if_missing "$name"
+    skip=false
+    for excluded in "${ALL_EXCLUDED[@]}"; do
+      if [ "$name" == "$excluded" ]; then
+        skip=true
+        break
+      fi
+    done
+    [ "$skip" = true ] || add_component_if_missing "$name"
   done
 fi
 

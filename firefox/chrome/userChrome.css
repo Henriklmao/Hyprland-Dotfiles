@@ -1,0 +1,764 @@
+@import url("omarchy-mode.css"); /* omarchy-firefox-mode */
+/* ==========================================================================
+   userChrome.css — minimal, qutebrowser-inspired Firefox chrome
+   Palette: Omarchy "retro-82" (change the variables below to re-theme)
+
+   Behaviour:
+   - Top bar (tabs + pinned extensions + menu) is collapsed to a 3px strip.
+   - It opens for 2s on tab switch, and while hovered or focused.
+   - URL bar opens on Ctrl+L / Alt+D and covers the bar until focus is lost.
+   ========================================================================== */
+
+:root {
+  /* Fall back to retro-82 if omarchy-firefox-mode is not installed. */
+  --uc-bg: var(--omarchy-bg, #05182e);
+  --uc-bg-hover: color-mix(in srgb, var(--omarchy-fg, #f6dcac) 8%, var(--omarchy-bg, #05182e));
+  --uc-bg-selected: var(--omarchy-selection, #134e5a);
+  --uc-fg: var(--omarchy-fg, #f6dcac);
+  --uc-fg-dim: color-mix(in srgb, var(--omarchy-fg, #f6dcac) 65%, var(--omarchy-bg, #05182e));
+  --uc-accent: var(--omarchy-accent, #faa968);
+  --uc-border: var(--omarchy-muted, #134e5a);
+
+  --uc-bar-height: 30px;
+  --uc-collapsed-height: 3px;
+  --uc-tab-height: 25px;
+  --uc-tab-max-width: 170px;
+  --uc-button-size: 24px;
+
+  /* Number of pinned extension icons the tab strip should reserve space for. */
+  --uc-pinned-slots: 4;
+}
+
+/* --------------------------------------------------------------------------
+   1. Remove everything that is not tabs, URL bar or the right-hand buttons
+   -------------------------------------------------------------------------- */
+
+#toolbar-menubar,
+#PersonalToolbar,
+#titlebar-buttonbox-container,
+.titlebar-buttonbox-container,
+.titlebar-buttonbox,
+.titlebar-button,
+.titlebar-spacer,
+#sidebar-box,
+#sidebar-main,
+#sidebar-button,
+#firefox-view-button,
+#tabs-newtab-button,
+#new-tab-button,
+#alltabs-button,
+#smartwindow-group-tabs-button,
+#ai-window-toggle,
+#reset-pbm-toolbar-button {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. The autohiding top bar
+   -------------------------------------------------------------------------- */
+
+#navigator-toolbox {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: var(--uc-collapsed-height);
+  min-height: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: var(--uc-bg) !important;
+  box-shadow: inset 0 -1px 0 var(--uc-border) !important;
+  z-index: 1000 !important;
+  transition: height 150ms ease !important;
+}
+
+#navigator-toolbox:hover {
+  height: var(--uc-bar-height) !important;
+}
+
+/* Keep URL-bar suggestions and other in-chrome popups unclipped while the
+   address bar is focused. Native panels are separate popups anyway. */
+#navigator-toolbox:focus-within {
+  height: var(--uc-bar-height) !important;
+  overflow: visible !important;
+}
+
+#TabsToolbar {
+  height: var(--uc-bar-height) !important;
+  min-height: var(--uc-bar-height) !important;
+  max-height: var(--uc-bar-height) !important;
+  padding: 0 calc(64px + var(--uc-pinned-slots) * var(--uc-button-size)) 0 2px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Tab strip — small, flat, qutebrowser-like
+   -------------------------------------------------------------------------- */
+
+#tabbrowser-tabs {
+  height: var(--uc-bar-height) !important;
+  align-items: center !important;
+  --tab-min-height: var(--uc-tab-height) !important;
+}
+
+.tabbrowser-tab {
+  height: var(--uc-tab-height) !important;
+  min-height: var(--uc-tab-height) !important;
+  max-height: var(--uc-tab-height) !important;
+  min-width: 36px !important;
+  max-width: var(--uc-tab-max-width) !important;
+  margin: 0 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  font-size: 11px !important;
+  background: transparent !important;
+}
+
+.tabbrowser-tab .tab-stack {
+  height: var(--uc-tab-height) !important;
+}
+
+.tabbrowser-tab .tab-background {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: var(--tab-border-radius, 3px) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tabbrowser-tab:hover .tab-background {
+  background: var(--uc-bg-hover) !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+  background: var(--uc-bg-selected) !important;
+  box-shadow: inset 0 -2px 0 var(--uc-accent) !important;
+}
+
+.tabbrowser-tab .tab-content {
+  padding: 0 6px !important;
+  gap: 5px !important;
+}
+
+.tabbrowser-tab .tab-icon-image {
+  width: 13px !important;
+  height: 13px !important;
+  margin: 0 !important;
+}
+
+.tabbrowser-tab .tab-label {
+  font-size: 11px !important;
+  line-height: var(--uc-tab-height) !important;
+  color: var(--uc-fg-dim) !important;
+}
+
+.tabbrowser-tab[selected] .tab-label {
+  color: var(--uc-fg) !important;
+}
+
+/* No close buttons, no mute overlay, no secondary labels */
+.tab-close-button,
+.tab-icon-overlay,
+.tab-secondary-label {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Navigation toolbar as a transparent overlay inside the same bar
+   -------------------------------------------------------------------------- */
+
+#nav-bar {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  height: var(--uc-bar-height) !important;
+  min-height: var(--uc-bar-height) !important;
+  max-height: var(--uc-bar-height) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  z-index: 100 !important;
+}
+
+#nav-bar > :not(#nav-bar-customization-target):not(#PanelUI-button):not(#PanelUI-menu-button) {
+  display: none !important;
+}
+
+/* The toolbar's children are laid out by hand. Hide everything first. */
+#nav-bar-customization-target > * {
+  display: none !important;
+}
+
+#nav-bar-customization-target {
+  position: static !important;
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  height: var(--uc-bar-height) !important;
+  padding: 0 60px 0 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+}
+
+/* Pinned extension icons (both the legacy toolbarbutton and the newer
+   unified-extensions toolbaritem are supported). */
+#nav-bar-customization-target > .toolbarbutton-1[data-extensionid],
+#nav-bar-customization-target > toolbaritem[data-extensionid] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: var(--uc-button-size) !important;
+  height: var(--uc-button-size) !important;
+  min-width: var(--uc-button-size) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: var(--toolbarbutton-border-radius, 3px) !important;
+  pointer-events: auto !important;
+}
+
+#nav-bar-customization-target > .toolbarbutton-1[data-extensionid]:hover,
+#nav-bar-customization-target > toolbaritem[data-extensionid]:hover {
+  background-color: var(--uc-bg-hover) !important;
+}
+
+#nav-bar-customization-target > .toolbarbutton-1[data-extensionid] .toolbarbutton-badge-stack,
+#nav-bar-customization-target > toolbaritem[data-extensionid] .toolbarbutton-badge-stack {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+#nav-bar-customization-target > .toolbarbutton-1[data-extensionid] .toolbarbutton-icon,
+#nav-bar-customization-target > toolbaritem[data-extensionid] .toolbarbutton-icon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+#nav-bar-customization-target > toolbaritem[data-extensionid] > .unified-extensions-item-row-wrapper {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#nav-bar-customization-target > toolbaritem[data-extensionid] .unified-extensions-item-action-button {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: var(--uc-button-size) !important;
+  height: var(--uc-button-size) !important;
+}
+
+/* These are panel-only parts of a pinned extension item. */
+#nav-bar-customization-target > toolbaritem[data-extensionid] .unified-extensions-item-contents,
+#nav-bar-customization-target > toolbaritem[data-extensionid] .unified-extensions-item-menu-button {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. URL bar — hidden until focused (Ctrl+L / Alt+D), then an overlay
+   -------------------------------------------------------------------------- */
+
+#urlbar-container {
+  display: flex !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 4px !important;
+  right: 60px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: calc(var(--uc-bar-height) - 4px) !important;
+  margin: 0 !important;
+  visibility: visible !important;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 500 !important;
+  transition: opacity 80ms linear;
+}
+
+#urlbar-container:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#urlbar {
+  --toolbar-field-background-color: var(--uc-bg-hover) !important;
+  --toolbar-field-color: var(--uc-fg) !important;
+  --toolbar-field-border-color: var(--uc-border) !important;
+  --toolbar-field-focus-background-color: var(--uc-bg-hover) !important;
+  --toolbar-field-focus-color: var(--uc-fg) !important;
+  --toolbar-field-focus-border-color: var(--uc-accent) !important;
+  --urlbar-height: calc(var(--uc-bar-height) - 6px) !important;
+  font-size: 12px !important;
+}
+
+#urlbar-background,
+.urlbar-background {
+  border: 1px solid var(--uc-border) !important;
+  border-radius: var(--urlbar-background-border-radius, 3px) !important;
+  background-color: var(--uc-bg-hover) !important;
+  box-shadow: none !important;
+}
+
+#urlbar:focus-within > #urlbar-background,
+#urlbar:focus-within .urlbar-background {
+  border-color: var(--uc-accent) !important;
+}
+
+#urlbar-input {
+  color: var(--uc-fg) !important;
+}
+
+/* Results dropdown */
+.urlbarView,
+.urlbarView-background,
+#urlbar-results,
+.urlbarView-body-outer,
+.urlbarView-body-inner {
+  background-color: var(--uc-bg-hover) !important;
+  color: var(--uc-fg) !important;
+  border-color: var(--uc-border) !important;
+}
+
+.urlbarView-row:hover,
+.urlbarView-row[selected] {
+  background-color: var(--uc-bg-selected) !important;
+}
+
+.urlbarView-row .urlbarView-title {
+  color: var(--uc-fg) !important;
+}
+
+.urlbarView-row .urlbarView-url {
+  color: var(--uc-fg-dim) !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. Hamburger menu + extensions button, pinned to the top right
+   -------------------------------------------------------------------------- */
+
+#unified-extensions-button {
+  display: flex !important;
+  position: absolute !important;
+  box-sizing: border-box !important;
+  top: 3px !important;
+  right: 32px !important;
+  width: var(--uc-button-size) !important;
+  height: var(--uc-button-size) !important;
+  min-width: var(--uc-button-size) !important;
+  padding: 3px !important;
+  margin: 0 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 600 !important;
+}
+
+#PanelUI-button {
+  display: flex !important;
+  position: absolute !important;
+  box-sizing: border-box !important;
+  top: 0 !important;
+  right: 4px !important;
+  align-items: center !important;
+  height: var(--uc-bar-height) !important;
+  pointer-events: auto !important;
+  z-index: 600 !important;
+}
+
+#PanelUI-menu-button {
+  box-sizing: border-box !important;
+  width: var(--uc-button-size) !important;
+  height: var(--uc-button-size) !important;
+  min-width: var(--uc-button-size) !important;
+  padding: 3px !important;
+  margin: 0 !important;
+}
+
+#PanelUI-menu-button .toolbarbutton-icon,
+#unified-extensions-button .toolbarbutton-icon {
+  width: 18px !important;
+  height: 18px !important;
+  fill: var(--uc-fg-dim) !important;
+  color: var(--uc-fg-dim) !important;
+  opacity: 1 !important;
+}
+
+#PanelUI-menu-button:hover .toolbarbutton-icon,
+#unified-extensions-button:hover .toolbarbutton-icon,
+#unified-extensions-button[open] .toolbarbutton-icon,
+#PanelUI-menu-button[open] .toolbarbutton-icon {
+  fill: var(--uc-accent) !important;
+  color: var(--uc-accent) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Matching little details (findbar, panels, popups)
+   -------------------------------------------------------------------------- */
+
+findbar {
+  background: var(--uc-bg) !important;
+  color: var(--uc-fg) !important;
+  border-top: 1px solid var(--uc-border) !important;
+}
+
+menupopup,
+panel {
+  --panel-background: var(--uc-bg-hover) !important;
+  --panel-color: var(--uc-fg) !important;
+  --panel-border-color: var(--uc-border) !important;
+}
+
+/* Personal toolbar stays hidden even when toggled by shortcuts */
+#PersonalToolbar[collapsed="false"] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. Show the bar for 2s on every tab switch
+   Each tab position needs its own animation name, otherwise the CSS engine
+   does not restart the animation when the selected tab changes.
+   -------------------------------------------------------------------------- */
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(1)[selected]) {
+  animation: uc-bar-1 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(2)[selected]) {
+  animation: uc-bar-2 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(3)[selected]) {
+  animation: uc-bar-3 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(4)[selected]) {
+  animation: uc-bar-4 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(5)[selected]) {
+  animation: uc-bar-5 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(6)[selected]) {
+  animation: uc-bar-6 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(7)[selected]) {
+  animation: uc-bar-7 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(8)[selected]) {
+  animation: uc-bar-8 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(9)[selected]) {
+  animation: uc-bar-9 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(10)[selected]) {
+  animation: uc-bar-10 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(11)[selected]) {
+  animation: uc-bar-11 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(12)[selected]) {
+  animation: uc-bar-12 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(13)[selected]) {
+  animation: uc-bar-13 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(14)[selected]) {
+  animation: uc-bar-14 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(15)[selected]) {
+  animation: uc-bar-15 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(16)[selected]) {
+  animation: uc-bar-16 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(17)[selected]) {
+  animation: uc-bar-17 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(18)[selected]) {
+  animation: uc-bar-18 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(19)[selected]) {
+  animation: uc-bar-19 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(20)[selected]) {
+  animation: uc-bar-20 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(21)[selected]) {
+  animation: uc-bar-21 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(22)[selected]) {
+  animation: uc-bar-22 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(23)[selected]) {
+  animation: uc-bar-23 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(24)[selected]) {
+  animation: uc-bar-24 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(25)[selected]) {
+  animation: uc-bar-25 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(26)[selected]) {
+  animation: uc-bar-26 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(27)[selected]) {
+  animation: uc-bar-27 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(28)[selected]) {
+  animation: uc-bar-28 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(29)[selected]) {
+  animation: uc-bar-29 2s ease;
+}
+
+#navigator-toolbox:has(.tabbrowser-tab:nth-child(30)[selected]) {
+  animation: uc-bar-30 2s ease;
+}
+
+@keyframes uc-bar-1 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-2 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-3 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-4 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-5 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-6 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-7 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-8 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-9 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-10 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-11 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-12 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-13 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-14 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-15 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-16 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-17 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-18 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-19 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-20 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-21 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-22 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-23 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-24 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-25 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-26 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-27 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-28 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-29 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}
+
+@keyframes uc-bar-30 {
+  0%   { height: var(--uc-collapsed-height); }
+  5%   { height: var(--uc-bar-height); }
+  85%  { height: var(--uc-bar-height); }
+  100% { height: var(--uc-collapsed-height); }
+}

@@ -1,0 +1,16 @@
+/* ==========================================================================
+   userContent.css — thin, themed scrollbars for web content
+   ========================================================================== */
+
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: #134e5a transparent;
+}
+
+/* Keep the same look in about: pages */
+@-moz-document url-prefix("about:") {
+  :root {
+    scrollbar-width: thin;
+    scrollbar-color: #134e5a transparent;
+  }
+}
