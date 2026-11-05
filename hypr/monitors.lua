@@ -14,18 +14,18 @@ hl.monitor({
   transform = 0
 })
 hl.monitor({
-  output = "DP-3",
-  disabled = true
-})
-hl.monitor({
   output = "HDMI-A-1",
   mode = "1920x1080@60",
   position = "-1920x60",
   scale = 1,
   transform = 0
 })
+hl.monitor({
+  output = "DP-3",
+  disabled = true
+})
 
 -- Workspace assignments
 hl.workspace_rule({ workspace = "1", monitor = "DP-1", default = true })
-hl.workspace_rule({ workspace = "2", monitor = "DP-2", default = true })
-hl.workspace_rule({ workspace = "3", monitor = "HDMI-A-1", default = true })
+hl.workspace_rule({ workspace = "11", monitor = "DP-2", default = true })
+hl.workspace_rule({ workspace = "21", monitor = "HDMI-A-1", default = true })
