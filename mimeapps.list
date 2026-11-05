@@ -13,11 +13,11 @@ x-scheme-handler/webcals=userapp-Thunderbird-C8RHU3.desktop
 text/calendar=userapp-Thunderbird-C8RHU3.desktop
 application/x-extension-ics=userapp-Thunderbird-C8RHU3.desktop
 x-scheme-handler/net.thunderbird=userapp-Thunderbird-X4QFU3.desktop
-text/html=org.qutebrowser.qutebrowser.desktop
-x-scheme-handler/http=org.qutebrowser.qutebrowser.desktop
-x-scheme-handler/https=org.qutebrowser.qutebrowser.desktop
-x-scheme-handler/about=org.qutebrowser.qutebrowser.desktop
-x-scheme-handler/unknown=org.qutebrowser.qutebrowser.desktop
+text/html=firefox.desktop
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+x-scheme-handler/about=firefox.desktop
+x-scheme-handler/unknown=firefox.desktop
 x-scheme-handler/deezer=deezer-enhanced.desktop
 
 [Added Associations]

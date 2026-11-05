@@ -25,7 +25,7 @@ export QT_STYLE_OVERRIDE=adwaita-dark
 export PATH="$PATH:/home/henrik/.local/bin/wb-headsetcontrol"
 export PATH="$PATH:/home/henrik/.local/bin"
 unset BROWSER
-export BROWSER="org.qutebrowser.qutebrowser.desktop"
+export BROWSER="firefox"
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/home/henrik/.lmstudio/bin"
