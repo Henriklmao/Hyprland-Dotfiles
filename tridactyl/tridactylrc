@@ -1,0 +1,4 @@
+" Yank git clone ssh
+bind yG composite js "git clone " + document.location.href.replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") | clipboard yank
+" Yank git clone https
+bind yg composite js "git clone " + document.location.href.replace(/\/$/, ".git") | clipboard yank

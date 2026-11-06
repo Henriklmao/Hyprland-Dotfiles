@@ -37,6 +37,7 @@ COMPONENTS=(
   "fish|$DOTFILES_SRC/fish|$HOME/.config/fish"
   "qutebrowser|$DOTFILES_SRC/qutebrowser|$HOME/.config/qutebrowser"
   "firefox|$DOTFILES_SRC/firefox|$HOME/.config/mozilla/firefox"
+  "tridactyl|$DOTFILES_SRC/tridactyl|$HOME/.config/tridactyl"
   "quickshell|$DOTFILES_SRC/quickshell|$HOME/.config/quickshell"
   "yazi|$DOTFILES_SRC/yazi|$HOME/.config/yazi"
   "nvim|nvim-branch|$HOME/.config/nvim"
