@@ -1,4 +1,44 @@
+" Tridactyl Firefox addon config
+" refer to manual: https://github.com/tridactyl/tridactyl/wiki
+
+
 " Yank git clone ssh
 bind yG composite js "git clone " + document.location.href.replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") | clipboard yank
 " Yank git clone https
 bind yg composite js "git clone " + document.location.href.replace(/\/$/, ".git") | clipboard yank
+
+
+" ---------------------------------------------------------------------------
+" qutebrowser-artige Keybinds
+" ---------------------------------------------------------------------------
+
+" O: URL-Prompt, aber in einem neuen Tab öffnen (o bleibt aktueller Tab)
+bind O fillcmdline tabopen
+
+" Tab schließen nur noch mit dd - d allein wird deaktiviert
+unbind d
+bind dd tabclose
+
+" u: letzten geschlossenen Tab (oder zuletzt geschlossenes Fenster) wiederherstellen
+bind u undo
+bind U undo window
+
+" M: aktuelle Seite als Lesezeichen setzen/entfernen (Toggle)
+bind M bmark
+
+" m: benannter Quickmark im qutebrowser-Stil.
+" Tridactyl kennt nativ nur Quickmarks auf einzelnen Tasten. Benannte
+" Quickmarks werden deshalb als Lesezeichen mit dem Präfix "qm:" gespeichert.
+" b / B zeigen sie über die Lesezeichen-Completion an (aktueller / neuer Tab).
+bind m fillcmdline qmsave
+bind b fillcmdline_notrail bmarks qm:
+bind B fillcmdline_notrail bmarks -t qm:
+
+" Marks (Standard: m) bleiben unter gm erreichbar
+bind gm gobble 1 markadd
+
+" Quickmark speichern: qmsave <name>
+command qmsave jsb -d@ (async () => { const name = JS_ARGS.slice(1).join(" ").trim(); if (!name) return; const tab = await tri.webext.activeTab(); const title = "qm:" + name; const old = await tri.browserBg.bookmarks.search({ title }); for (const b of old) if (b.title === title) await tri.browserBg.bookmarks.remove(b.id); await tri.browserBg.bookmarks.create({ url: tab.url, title }); })()@
+
+" Quickmark löschen: qmdel <name>
+command qmdel jsb -d@ (async () => { const title = "qm:" + JS_ARGS.slice(1).join(" ").trim(); const found = await tri.browserBg.bookmarks.search({ title }); for (const b of found) if (b.title === title) await tri.browserBg.bookmarks.remove(b.id); })()@
