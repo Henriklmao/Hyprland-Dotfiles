@@ -38,7 +38,7 @@ bind B fillcmdline_notrail bmarks -t qm:
 bind gm gobble 1 markadd
 
 " Quickmark speichern: qmsave <name>
-command qmsave jsb -d@ (async () => { const name = JS_ARGS.slice(1).join(" ").trim(); if (!name) return; const tab = await tri.webext.activeTab(); const title = "qm:" + name; const old = await tri.browserBg.bookmarks.search({ title }); for (const b of old) if (b.title === title) await tri.browserBg.bookmarks.remove(b.id); await tri.browserBg.bookmarks.create({ url: tab.url, title }); })()@
+command qmsave jsb -d@ (async () => { const name = JS_ARGS.slice(1).join(" ").trim(); if (!name) return; const [tab] = await browser.tabs.query({ active: true, currentWindow: true }); const title = "qm:" + name; const old = await browser.bookmarks.search({ title }); for (const b of old) if (b.title === title) await browser.bookmarks.remove(b.id); await browser.bookmarks.create({ url: tab.url, title }); })()@
 
 " Quickmark löschen: qmdel <name>
-command qmdel jsb -d@ (async () => { const title = "qm:" + JS_ARGS.slice(1).join(" ").trim(); const found = await tri.browserBg.bookmarks.search({ title }); for (const b of found) if (b.title === title) await tri.browserBg.bookmarks.remove(b.id); })()@
+command qmdel jsb -d@ (async () => { const title = "qm:" + JS_ARGS.slice(1).join(" ").trim(); const found = await browser.bookmarks.search({ title }); for (const b of found) if (b.title === title) await browser.bookmarks.remove(b.id); })()@
