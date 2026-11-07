@@ -23,3 +23,4 @@ This repository manages personal dotfiles using symlinks to `~/.config`.
 - **Hyprland:** Main configuration is in `hypr/`.
 - **Neovim / VPS:** These are managed in separate branches (`nvim` and `server`, respectively). If you need to work on those, ensure you are on the correct branch.
 - **Paths:** Always assume configuration is managed via symlinks. Do not edit files in `~/.config` directly if you want changes to persist; edit them in this repository and (re)run `install.sh` if necessary.
+- **Language:** All comments in configuration files must be written in English.
