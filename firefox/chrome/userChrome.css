@@ -466,8 +466,11 @@
 }
 
 #unified-extensions-button .toolbarbutton-icon {
+  box-sizing: border-box !important;
   width: 16px !important;
   height: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
   fill: var(--uc-fg-dim) !important;
   color: var(--uc-fg-dim) !important;
   opacity: 1 !important;
