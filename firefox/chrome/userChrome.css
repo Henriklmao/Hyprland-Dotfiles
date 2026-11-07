@@ -225,8 +225,12 @@
 }
 
 #tabs-newtab-button .toolbarbutton-icon {
+  box-sizing: border-box !important;
   width: 14px !important;
   height: 14px !important;
+  /* Firefox gives toolbar icons 6px of inner padding. Without clearing it the
+     content box shrinks to 2x2px and the "+" is reduced to an invisible dot. */
+  padding: 0 !important;
   margin: 0 !important;
 }
 
