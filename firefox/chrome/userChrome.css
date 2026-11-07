@@ -44,7 +44,6 @@
 #sidebar-main,
 #sidebar-button,
 #firefox-view-button,
-#tabs-newtab-button,
 #new-tab-button,
 #alltabs-button,
 #smartwindow-group-tabs-button,
@@ -103,12 +102,18 @@
   --tab-min-height: var(--uc-tab-height) !important;
 }
 
+/* Use Firefox's own variables so the open/close width animations keep
+   working. Overriding min/max-width on .tabbrowser-tab directly breaks the
+   closing animation and leaves invisible gaps. */
+#tabbrowser-tabs[orient="horizontal"] {
+  --tab-min-width: 36px !important;
+  --tab-max-width: var(--uc-tab-max-width) !important;
+}
+
 .tabbrowser-tab {
   height: var(--uc-tab-height) !important;
   min-height: var(--uc-tab-height) !important;
   max-height: var(--uc-tab-height) !important;
-  min-width: 36px !important;
-  max-width: var(--uc-tab-max-width) !important;
   margin: 0 1px !important;
   padding: 0 !important;
   border: 0 !important;
@@ -158,11 +163,71 @@
   color: var(--uc-fg) !important;
 }
 
-/* No close buttons, no mute overlay, no secondary labels */
-.tab-close-button,
+/* No mute overlay, no secondary labels */
 .tab-icon-overlay,
 .tab-secondary-label {
   display: none !important;
+}
+
+/* Close button: always on the selected tab, visible on hover otherwise */
+.tab-close-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  padding: 2px !important;
+  margin: 0 0 0 2px !important;
+  border-radius: var(--toolbarbutton-border-radius, 3px) !important;
+  opacity: 0.55;
+}
+
+.tabbrowser-tab:hover .tab-close-button,
+.tabbrowser-tab[selected] .tab-close-button {
+  opacity: 1;
+}
+
+.tab-close-button:hover {
+  background-color: var(--uc-bg-hover) !important;
+}
+
+.tab-close-button .toolbarbutton-icon {
+  width: 12px !important;
+  height: 12px !important;
+  margin: 0 !important;
+}
+
+/* "+" at the end of the tab list */
+#tabs-newtab-button {
+  display: flex !important;
+  align-self: center !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 24px !important;
+  height: var(--uc-tab-height) !important;
+  min-width: 24px !important;
+  padding: 4px !important;
+  margin: 0 1px !important;
+  border-radius: var(--toolbarbutton-border-radius, 3px) !important;
+  color: var(--uc-fg-dim) !important;
+  fill: var(--uc-fg-dim) !important;
+  opacity: 0.8;
+}
+
+#tabs-newtab-button:hover {
+  background-color: var(--uc-bg-hover) !important;
+  color: var(--uc-accent) !important;
+  fill: var(--uc-accent) !important;
+  opacity: 1;
+}
+
+#tabs-newtab-button .toolbarbutton-icon {
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -218,6 +283,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  align-self: center !important;
   box-sizing: border-box !important;
   width: var(--uc-button-size) !important;
   height: var(--uc-button-size) !important;
@@ -236,8 +302,11 @@
 
 #nav-bar-customization-target > .toolbarbutton-1[data-extensionid] .toolbarbutton-badge-stack,
 #nav-bar-customization-target > toolbaritem[data-extensionid] .toolbarbutton-badge-stack {
-  width: 18px !important;
-  height: 18px !important;
+  box-sizing: border-box !important;
+  width: var(--uc-button-size) !important;
+  height: var(--uc-button-size) !important;
+  padding: 4px !important;
+  margin: 0 !important;
 }
 
 #nav-bar-customization-target > .toolbarbutton-1[data-extensionid] .toolbarbutton-icon,
@@ -360,7 +429,7 @@
   width: var(--uc-button-size) !important;
   height: var(--uc-button-size) !important;
   min-width: var(--uc-button-size) !important;
-  padding: 3px !important;
+  padding: 2px !important;
   margin: 0 !important;
   visibility: visible !important;
   pointer-events: auto !important;
@@ -388,10 +457,17 @@
   margin: 0 !important;
 }
 
-#PanelUI-menu-button .toolbarbutton-icon,
-#unified-extensions-button .toolbarbutton-icon {
+#PanelUI-menu-button .toolbarbutton-icon {
   width: 18px !important;
   height: 18px !important;
+  fill: var(--uc-fg-dim) !important;
+  color: var(--uc-fg-dim) !important;
+  opacity: 1 !important;
+}
+
+#unified-extensions-button .toolbarbutton-icon {
+  width: 20px !important;
+  height: 20px !important;
   fill: var(--uc-fg-dim) !important;
   color: var(--uc-fg-dim) !important;
   opacity: 1 !important;
