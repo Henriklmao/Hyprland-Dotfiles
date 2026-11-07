@@ -429,7 +429,7 @@
   width: var(--uc-button-size) !important;
   height: var(--uc-button-size) !important;
   min-width: var(--uc-button-size) !important;
-  padding: 2px !important;
+  padding: 4px !important;
   margin: 0 !important;
   visibility: visible !important;
   pointer-events: auto !important;
@@ -466,8 +466,8 @@
 }
 
 #unified-extensions-button .toolbarbutton-icon {
-  width: 20px !important;
-  height: 20px !important;
+  width: 16px !important;
+  height: 16px !important;
   fill: var(--uc-fg-dim) !important;
   color: var(--uc-fg-dim) !important;
   opacity: 1 !important;
