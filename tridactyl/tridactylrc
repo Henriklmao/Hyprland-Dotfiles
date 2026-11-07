@@ -9,36 +9,54 @@ bind yg composite js "git clone " + document.location.href.replace(/\/$/, ".git"
 
 
 " ---------------------------------------------------------------------------
-" qutebrowser-artige Keybinds
+" qutebrowser-like keybinds
 " ---------------------------------------------------------------------------
 
-" O: URL-Prompt, aber in einem neuen Tab öffnen (o bleibt aktueller Tab)
+" t / T: unbind the tabopen binds (t = prompt, T = current URL in new tab)
+unbind t
+unbind T
+
+" O: URL prompt, but open it in a new tab (o stays in the current tab)
 bind O fillcmdline tabopen
 
-" Tab schließen nur noch mit dd - d allein wird deaktiviert
+" yo / yO: open / tabopen with the current URL pre-filled
+bind yo current_url open
+bind yO current_url tabopen
+
+" Close tabs with dd only - d on its own is disabled
 unbind d
 bind dd tabclose
 
-" u: letzten geschlossenen Tab (oder zuletzt geschlossenes Fenster) wiederherstellen
+" u: restore the last closed tab (or the last closed window)
 bind u undo
 bind U undo window
 
-" M: aktuelle Seite als Lesezeichen setzen/entfernen (Toggle)
+" M: toggle bookmark for the current page
 bind M bmark
 
-" m: benannter Quickmark im qutebrowser-Stil.
-" Tridactyl kennt nativ nur Quickmarks auf einzelnen Tasten. Benannte
-" Quickmarks werden deshalb als Lesezeichen mit dem Präfix "qm:" gespeichert.
-" b / B zeigen sie über die Lesezeichen-Completion an (aktueller / neuer Tab).
+" m: named quickmark in qutebrowser style.
+" Tridactyl natively only supports quickmarks on single keys. Named
+" quickmarks are therefore stored as bookmarks with the "qm:" prefix.
+" b / B show them via bookmark completion (current / new tab).
 bind m fillcmdline qmsave
 bind b fillcmdline_notrail bmarks qm:
 bind B fillcmdline_notrail bmarks -t qm:
 
-" Marks (Standard: m) bleiben unter gm erreichbar
+" Marks (default: m) remain available under gm
 bind gm gobble 1 markadd
 
-" Quickmark speichern: qmsave <name>
+" Save quickmark: qmsave <name>
 command qmsave jsb -d@ (async () => { const name = JS_ARGS.slice(1).join(" ").trim(); if (!name) return; const [tab] = await browser.tabs.query({ active: true, currentWindow: true }); const title = "qm:" + name; const old = await browser.bookmarks.search({ title }); for (const b of old) if (b.title === title) await browser.bookmarks.remove(b.id); await browser.bookmarks.create({ url: tab.url, title }); })()@
 
-" Quickmark löschen: qmdel <name>
+" Delete quickmark: qmdel <name>
 command qmdel jsb -d@ (async () => { const title = "qm:" + JS_ARGS.slice(1).join(" ").trim(); const found = await browser.bookmarks.search({ title }); for (const b of found) if (b.title === title) await browser.bookmarks.remove(b.id); })()@
+
+" ---------------------------------------------------------------------------
+" Dark Reader
+" ---------------------------------------------------------------------------
+
+" td: toggle Dark Reader on/off for the current page.
+" Dark Reader does not expose an API to other add-ons, so we send the
+" shortcut configured in Dark Reader (default: Alt+Shift+D) to Firefox.
+" Requires the Tridactyl native messenger and wtype (Wayland).
+bind td exclaim_quiet wtype -M alt -M shift -k d -m shift -m alt
