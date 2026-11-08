@@ -4,8 +4,9 @@
    Palette: Omarchy "retro-82" (change the variables below to re-theme)
 
    Behaviour:
-   - Top bar (tabs + pinned extensions + menu) is collapsed to a 3px strip.
-   - It opens for 2s on tab switch, and while hovered or focused.
+   - Top bar (tabs + pinned extensions + menu) is always visible in normal windows.
+   - In fullscreen it collapses to a 3px strip and opens for 2s on tab switch,
+     and while hovered or focused.
    - URL bar opens on Ctrl+L / Alt+D and covers the bar until focus is lost.
    ========================================================================== */
 
@@ -20,7 +21,9 @@
   --uc-border: var(--omarchy-muted, #134e5a);
 
   --uc-bar-height: 30px;
-  --uc-collapsed-height: 3px;
+  --uc-autohide-height: 3px;
+  /* The bar only collapses in fullscreen; keep it at full height otherwise. */
+  --uc-collapsed-height: var(--uc-bar-height);
   --uc-tab-height: 25px;
   --uc-tab-max-width: 170px;
   --uc-button-size: 24px;
@@ -53,11 +56,19 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. The autohiding top bar
+   2. The top bar (autohides in fullscreen only)
    -------------------------------------------------------------------------- */
 
+/* In fullscreen the bar collapses to a thin strip; everywhere else it keeps
+   its full height. */
+:root[inFullscreen] {
+  --uc-collapsed-height: var(--uc-autohide-height);
+}
+
 #navigator-toolbox {
-  position: fixed !important;
+  /* Stay in the normal flow so web content starts below the bar. In
+     fullscreen the bar becomes fixed and overlays the page instead. */
+  position: relative !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
@@ -69,6 +80,10 @@
   box-shadow: inset 0 -1px 0 var(--uc-border) !important;
   z-index: 1000 !important;
   transition: height 150ms ease !important;
+}
+
+:root[inFullscreen] #navigator-toolbox {
+  position: fixed !important;
 }
 
 #navigator-toolbox:hover {

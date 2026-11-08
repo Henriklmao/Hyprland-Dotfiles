@@ -2,12 +2,12 @@
 
 /* Theme colors */
 :root, :root * {
-  --omarchy-bg: #05182e;
-  --omarchy-bg-dark: #031222;
-  --omarchy-fg: #f6dcac;
-  --omarchy-accent: #faa968;
-  --omarchy-selection: #134e5a;
-  --omarchy-muted: #2a6b78;
+  --omarchy-bg: #2c2525;
+  --omarchy-bg-dark: #211b1b;
+  --omarchy-fg: #e6d9db;
+  --omarchy-accent: #f38d70;
+  --omarchy-selection: #403e41;
+  --omarchy-muted: #72696a;
 
   --toolbox-background-color: var(--omarchy-bg-dark) !important;
   --toolbox-background-color-inactive: var(--omarchy-bg-dark) !important;
