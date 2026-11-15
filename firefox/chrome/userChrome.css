@@ -28,6 +28,10 @@
   --uc-tab-max-width: 170px;
   --uc-button-size: 24px;
 
+  /* Width of the zoom controls: 20px out + 54px reset + 20px in.
+     Keep in sync with section 4a if you change the button sizes. */
+  --uc-zoom-width: 94px;
+
   /* Number of pinned extension icons the tab strip should reserve space for. */
   --uc-pinned-slots: 4;
 }
@@ -101,7 +105,7 @@
   height: var(--uc-bar-height) !important;
   min-height: var(--uc-bar-height) !important;
   max-height: var(--uc-bar-height) !important;
-  padding: 0 calc(64px + var(--uc-pinned-slots) * var(--uc-button-size)) 0 2px !important;
+  padding: 0 calc(64px + var(--uc-zoom-width) + var(--uc-pinned-slots) * var(--uc-button-size)) 0 2px !important;
   margin: 0 !important;
   border: 0 !important;
   background: transparent !important;
@@ -357,6 +361,101 @@
 }
 
 /* --------------------------------------------------------------------------
+   4a. Zoom controls — magnifier + current level, click to reset to 100%
+   The widget is added to the nav bar by placing "zoom-controls" in the
+   browser.uiCustomization.state pref. It lives in the flex flow, so it sits
+   directly left of the pinned extension icons.
+   -------------------------------------------------------------------------- */
+
+#nav-bar-customization-target > #zoom-controls {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  height: var(--uc-button-size) !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+}
+
+/* The separators between the buttons are noise in a 30px bar. */
+#nav-bar-customization-target > #zoom-controls > separator {
+  display: none !important;
+}
+
+#nav-bar-customization-target > #zoom-controls > toolbarbutton {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  height: var(--uc-button-size) !important;
+  min-width: 0 !important;
+  padding: 3px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: var(--toolbarbutton-border-radius, 3px) !important;
+  background: transparent !important;
+  -moz-context-properties: fill, fill-opacity !important;
+  fill: var(--uc-fg-dim) !important;
+  color: var(--uc-fg-dim) !important;
+}
+
+#nav-bar-customization-target > #zoom-controls > toolbarbutton:hover {
+  background-color: var(--uc-bg-hover) !important;
+  fill: var(--uc-accent) !important;
+  color: var(--uc-accent) !important;
+}
+
+#nav-bar-customization-target > #zoom-controls > toolbarbutton > .toolbarbutton-icon {
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  fill: currentColor !important;
+  -moz-context-properties: fill, fill-opacity !important;
+}
+
+/* Reset button: magnifier plus the current zoom percentage.
+   The icon is drawn with ::before because a list-style-image on a labelled
+   toolbarbutton does not survive the theme's icon handling. */
+#nav-bar-customization-target > #zoom-controls > #zoom-reset-button {
+  width: 54px !important;
+  padding: 3px !important;
+  gap: 2px !important;
+}
+
+#nav-bar-customization-target > #zoom-controls > #zoom-reset-button > .toolbarbutton-icon {
+  display: none !important;
+}
+
+#nav-bar-customization-target > #zoom-controls > #zoom-reset-button::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  background: url("chrome://global/skin/icons/search-glass.svg") center / contain no-repeat;
+  -moz-context-properties: fill, fill-opacity;
+  fill: currentColor;
+}
+
+#nav-bar-customization-target > #zoom-controls > #zoom-reset-button > .toolbarbutton-text {
+  display: block !important;
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+  font-variant-numeric: tabular-nums;
+  color: inherit !important;
+}
+
+/* --------------------------------------------------------------------------
    5. URL bar — hidden until focused (Ctrl+L / Alt+D), then an overlay
    -------------------------------------------------------------------------- */
 
@@ -365,7 +464,7 @@
   position: absolute !important;
   top: 1px !important;
   left: 4px !important;
-  right: 60px !important;
+  right: calc(60px + var(--uc-zoom-width)) !important;
   width: auto !important;
   min-width: 0 !important;
   max-width: none !important;
