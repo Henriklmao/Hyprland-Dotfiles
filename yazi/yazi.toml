@@ -47,6 +47,10 @@ download = [
 extract = [
   { run = "ouch d -y %s", desc = "Extract with ouch", for = "unix" },
 ]
+# XPS -> PDF (requires libgxps)
+convert-xps = [
+  { run = 'f=%s1; xpstopdf "$f" "${f%.*}.pdf"', desc = "Convert XPS to PDF", for = "unix", block = true },
+]
 
 [open]
 rules = [
@@ -68,6 +72,15 @@ rules = [
   # Code
   { mime = "application/{json,ndjson,javascript,wine-extension-ini}", use = [
     "edit",
+    "reveal",
+  ] },
+  # XPS document (must precede Archive: XPS files are detected as application/zip)
+  { url = "*.{xps,oxps}", use = [
+    "convert-xps",
+    "reveal",
+  ] },
+  { mime = "application/{vnd.ms-xpsdocument,oxps}", use = [
+    "convert-xps",
     "reveal",
   ] },
   # Archive

@@ -14,3 +14,17 @@
     scrollbar-color: #134e5a transparent;
   }
 }
+
+/* ==========================================================================
+   Tridactyl mode indicator
+   ========================================================================== */
+
+/* Never show the indicator while it says "normal".
+   `set modeindicatormodes.normal false` in tridactylrc only covers the real
+   normal mode; after focus leaves a text field Tridactyl keeps the internal
+   mode as "insert" and redraws the indicator as "normal", which stays visible.
+   user-origin !important beats the add-on stylesheet, so this also hides that
+   stale label. Insert, hint, visual, ... are unaffected. */
+.TridactylStatusIndicator.TridactylModenormal {
+  display: none !important;
+}

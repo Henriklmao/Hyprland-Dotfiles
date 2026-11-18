@@ -2,6 +2,18 @@
 " refer to manual: https://github.com/tridactyl/tridactyl/wiki
 
 
+" ---------------------------------------------------------------------------
+" Mode indicator
+" ---------------------------------------------------------------------------
+
+" Do not show the mode indicator in normal mode. Insert, hint, visual,
+" ignore, ... keep their indicator so they stay visible.
+" NB: Tridactyl still redraws the indicator as "normal" when focus leaves a
+" text field without a mode change; that stale label is hidden in
+" ~/Dotfiles/firefox/chrome/userContent.css.
+set modeindicatormodes.normal false
+
+
 " Yank git clone ssh
 bind yG composite js "git clone " + document.location.href.replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") | clipboard yank
 " Yank git clone https
