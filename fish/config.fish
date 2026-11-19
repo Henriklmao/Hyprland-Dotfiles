@@ -193,7 +193,9 @@ function __zoxide_zi
     and __zoxide_cd $result
 end
 # tirith
-tirith init --shell fish | source
+if which tirith &>/dev/null
+    tirith init --shell fish | source
+end
 # =============================================================================
 #
 # Commands for zoxide. Disable these using --no-cmd.
