@@ -78,3 +78,117 @@ if o.dictation_installed and o.dictation_installed() then
   o.bind("SUPER + CTRL + X", "Toggle dictation", "omarchy-dictation toggle")
   o.bind_hold("F9", "Start dictation (push-to-talk)", "omarchy-dictation start", "Stop dictation (push-to-talk)", "omarchy-dictation stop")
 end
+
+-- Universal clipboard ---------------------------------------------------------
+-- Omarchy 4.5 sends Ctrl+Shift+C/V to windows that carry the "terminal" tag.
+-- That breaks two cases for us:
+--   * Windows started with a custom class (herdr-work, yazi-float, lazygit, ...)
+--     never get the tag, so Super+C/V fall back to Ctrl+C/V. In herdr that is
+--     SIGINT instead of copy.
+--   * Ctrl+Shift+C/V is exact-matched by some terminals (e.g. foot) and
+--     swallowed by full-screen TUIs (e.g. Codex CLI).
+-- Recognize terminals by class and initial class too, and use the pre-4.5
+-- Insert chords, which every terminal emulator and TUI supports.
+local function send_shortcut_once(mods, key)
+  return function()
+    hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "down" }))
+
+    hl.timer(function()
+      hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "up" }))
+    end, { timeout = 50, type = "oneshot" })
+  end
+end
+
+-- Same set Omarchy tags, plus the class names other terminals report and the
+-- literal WezTerm app id (Omarchy only matches "wezterm").
+local terminal_classes = {
+  "^Alacritty$",
+  "^kitty$",
+  "^com%.mitchellh%.ghostty$",
+  "^wezterm$",
+  "^org%.wezfurlong%.wezterm$",
+  "^foot$",
+  "^org%.codeberg%.dnkl%.foot$",
+  "^st$",
+  "^xterm$",
+  "^urxvt.*$",
+  "^contour$",
+  "^org%.omarchy%..*$",
+  "^TUI%..*$",
+}
+
+-- A custom --class hides the terminal from the rules above (the window class
+-- becomes e.g. "herdr-work" and even initial_class follows it), so also look at
+-- the process that owns the window.
+local terminal_processes = {
+  kitty = true,
+  alacritty = true,
+  foot = true,
+  ghostty = true,
+  wezterm = true,
+  ["wezterm-gui"] = true,
+  st = true,
+  xterm = true,
+  urxvt = true,
+  contour = true,
+  konsole = true,
+  ["gnome-terminal-"] = true,
+  tilix = true,
+  sakura = true,
+}
+
+local function window_process_name(window)
+  if not window.pid then
+    return nil
+  end
+
+  local file = io.open("/proc/" .. window.pid .. "/comm", "r")
+  if not file then
+    return nil
+  end
+
+  local name = file:read("l")
+  file:close()
+  return name
+end
+
+local function active_window_is_terminal()
+  local window = hl.get_active_window()
+  if not window then
+    return false
+  end
+
+  for _, tag in ipairs(window.tags or {}) do
+    if tag:gsub("%*$", "") == "terminal" then
+      return true
+    end
+  end
+
+  for _, class in ipairs({ window.class or "", window.initial_class or "" }) do
+    for _, pattern in ipairs(terminal_classes) do
+      if class:match(pattern) then
+        return true
+      end
+    end
+  end
+
+  local process = window_process_name(window)
+  return process ~= nil and terminal_processes[process] == true
+end
+
+local function universal_clipboard_shortcut(default_mods, default_key, terminal_mods, terminal_key)
+  return function()
+    if active_window_is_terminal() then
+      send_shortcut_once(terminal_mods, terminal_key)()
+    else
+      send_shortcut_once(default_mods, default_key)()
+    end
+  end
+end
+
+-- Keep the same helper shape as Omarchy's default so the keybindings menu and
+-- any future default changes still work.
+local universal_copy = universal_clipboard_shortcut("CTRL", "C", "CTRL", "Insert")
+local universal_paste = universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert")
+o.rebind("SUPER + C", "Universal copy", universal_copy)
+o.rebind("SUPER + V", "Universal paste", universal_paste)
