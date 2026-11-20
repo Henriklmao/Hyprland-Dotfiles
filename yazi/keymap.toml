@@ -159,6 +159,10 @@ desc = "Go /mnt/NAS"
 on = ["g", "s"]
 run = "cd /mnt/ssd-vault"
 desc = "Go /mnt/ssd-vault"
+[[mgr.prepend_keymap]]
+on = ["g", "w"]
+run = "cd ~/Work"
+desc = "Go ~/Work"
 
 # Tasks
 [[mgr.prepend_keymap]]

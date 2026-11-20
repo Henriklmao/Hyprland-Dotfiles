@@ -11,7 +11,7 @@ sort_reverse = false
 sort_dir_first = true
 sort_translit = false
 sort_fallback = "alphabetical"
-linemode = "none"
+linemode = "size"
 show_hidden = false
 show_symlink = true
 scrolloff = 5
@@ -44,9 +44,7 @@ download = [
   { run = "ya emit download %S", desc = "Download" },
 ]
 # Ouch.yazi Decompression
-extract = [
-  { run = "ouch d -y %s", desc = "Extract with ouch", for = "unix" },
-]
+extract = [{ run = "ouch d -y %s", desc = "Extract with ouch", for = "unix" }]
 # XPS -> PDF (requires libgxps)
 convert-xps = [
   { run = 'f=%s1; xpstopdf "$f" "${f%.*}.pdf"', desc = "Convert XPS to PDF", for = "unix", block = true },
