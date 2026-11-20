@@ -44,15 +44,17 @@ A minimal, qutebrowser-inspired UI lives in `firefox/`:
 
 - The top bar autohides to a 3px strip; it opens on hover/focus and for
   2 seconds after switching tabs (like qutebrowser's `tabs.show = switching`)
-- Small tabs (max. 170 px) on the left, pinned extension icons plus hamburger
-  menu and extension panel on the right
+- Small tabs (max. 170 px) on the left, an always-visible downloads
+  indicator, pinned extension icons plus hamburger menu and extension panel on
+  the right
 - URL bar hidden until focused (`Ctrl+L` / `Alt+D`)
 - No new-tab button, tab close buttons, bookmarks bar or window controls
 - Colors follow the current Omarchy theme via the generated
   `chrome/omarchy-mode.css` from `omarchy-firefox-mode` (retro-82 fallback)
 
 `--uc-pinned-slots` at the top of `userChrome.css` controls how much room the
-tab strip reserves for pinned extension icons (default: 4).
+tab strip and URL bar reserve for the right-hand icons: pinned extensions plus
+the downloads indicator (default: 4).
 
 Install it with:
 

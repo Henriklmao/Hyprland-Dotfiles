@@ -17,4 +17,7 @@ user_pref("browser.tabs.tabClipWidth", 60);
 
 // Closing the last tab keeps the window open (qutebrowser-like)
 user_pref("browser.tabs.closeWindowWithLastTab", false);
+
+// Keep the downloads indicator visible even when there is nothing to download
+user_pref("browser.download.autohideButton", false);
 user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true); // omarchy-firefox-mode
