@@ -36,6 +36,14 @@
   /* Number of icon slots on the right (pinned extensions plus the downloads
      indicator) that the tab strip and the URL bar reserve room for. */
   --uc-pinned-slots: 4;
+
+  /* Width of the collapsed URL bar, i.e. the single slot that keeps the trust
+     shield (connection state, cookies) on the far left of the bar. */
+  --uc-shield-width: 26px;
+
+  /* Content height of a 24px button after its 3px padding; used to centre the
+     zoom percentage next to its magnifier. */
+  --uc-label-height: 18px;
 }
 
 /* --------------------------------------------------------------------------
@@ -107,7 +115,8 @@
   height: var(--uc-bar-height) !important;
   min-height: var(--uc-bar-height) !important;
   max-height: var(--uc-bar-height) !important;
-  padding: 0 calc(64px + var(--uc-zoom-width) + var(--uc-pinned-slots) * var(--uc-button-size)) 0 2px !important;
+  padding: 0 calc(64px + var(--uc-zoom-width) + var(--uc-pinned-slots) * var(--uc-button-size)) 0
+    calc(2px + var(--uc-shield-width) + 2px) !important;
   margin: 0 !important;
   border: 0 !important;
   background: transparent !important;
@@ -450,6 +459,12 @@
   display: block !important;
   flex: 0 0 auto !important;
   min-width: 0 !important;
+  /* The XUL label carries a min-height of 28px and draws its value at the top
+     of that box, which leaves the number floating above the icon row. Pin the
+     box and its line height to the button's content height instead. */
+  min-height: 0 !important;
+  height: var(--uc-label-height) !important;
+  line-height: var(--uc-label-height) !important;
   margin: 0 !important;
   padding: 0 !important;
   font-size: 10px !important;
@@ -544,6 +559,58 @@
 #urlbar-container:focus-within {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* 5b. Trust shield (connection state, tracker count, "clear cookies and site
+   data") stays visible while the bar is closed. Firefox 158 moved the shield
+   into the address bar's shadow DOM, so the closed bar is simply shrunk to one
+   icon slot at the far left of the top bar: the shadow flex layout puts the
+   shield first, everything else (input, field chrome) is clipped. The tab strip
+   reserves the same width on the left so tabs start after the shield. */
+#urlbar-container:not(:focus-within) {
+  left: 2px !important;
+  right: auto !important;
+  width: var(--uc-shield-width) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  overflow: hidden !important;
+  transition: none !important;
+}
+
+/* In the collapsed state the URL text and the field chrome must not show. */
+#urlbar-container:not(:focus-within) #urlbar {
+  --toolbar-field-color: transparent !important;
+  --toolbar-field-background-color: transparent !important;
+  --toolbar-field-border-color: transparent !important;
+  --urlbar-background-border: none !important;
+  --urlbar-background-border-open: none !important;
+  --urlbar-input-container-border: none !important;
+  --urlbar-input-container-outline-open: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* The theme paints a 1px `--uc-border` frame on the address field; the
+   collapsed one-icon bar must not show it. */
+#urlbar-container:not(:focus-within) .urlbar-background,
+#urlbar-container:not(:focus-within) #urlbar-background {
+  border: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Only the shield icon fits the slot: no "Not secure" label, no tracker
+   counter pill, no insecure-state background. Both stay in the panel. */
+#urlbar-container:not(:focus-within) #trust-icon-container {
+  background-color: transparent !important;
+}
+
+#urlbar-container:not(:focus-within) #trust-label,
+#urlbar-container:not(:focus-within) #trust-icon-tracker-count-longform-wrapper,
+#urlbar-container:not(:focus-within) #trust-icon-tracker-count-shortform-wrapper {
+  display: none !important;
 }
 
 #urlbar {

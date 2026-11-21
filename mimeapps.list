@@ -20,6 +20,13 @@ x-scheme-handler/about=firefox.desktop
 x-scheme-handler/unknown=firefox.desktop
 x-scheme-handler/deezer=deezer-enhanced.desktop
 x-scheme-handler/superwhisper=superwhisper-url.desktop
+x-scheme-handler/chrome=firefox.desktop
+application/x-extension-htm=firefox.desktop
+application/x-extension-html=firefox.desktop
+application/x-extension-shtml=firefox.desktop
+application/xhtml+xml=firefox.desktop
+application/x-extension-xhtml=firefox.desktop
+application/x-extension-xht=firefox.desktop
 
 [Added Associations]
 x-scheme-handler/mailto=userapp-Thunderbird-KQDKU3.desktop;
@@ -36,3 +43,12 @@ x-scheme-handler/webcals=userapp-Thunderbird-C8RHU3.desktop;
 text/calendar=userapp-Thunderbird-C8RHU3.desktop;
 application/x-extension-ics=userapp-Thunderbird-C8RHU3.desktop;
 x-scheme-handler/net.thunderbird=userapp-Thunderbird-X4QFU3.desktop;
+x-scheme-handler/http=firefox.desktop;
+x-scheme-handler/https=firefox.desktop;
+x-scheme-handler/chrome=firefox.desktop;
+application/x-extension-htm=firefox.desktop;
+application/x-extension-html=firefox.desktop;
+application/x-extension-shtml=firefox.desktop;
+application/xhtml+xml=firefox.desktop;
+application/x-extension-xhtml=firefox.desktop;
+application/x-extension-xht=firefox.desktop;
