@@ -214,3 +214,11 @@ alias zi=__zoxide_zi
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /home/henrik/.lmstudio/bin
 # End of LM Studio CLI section
+
+# OpenCode + lokales OTel-Stack (Jaeger, Prometheus, Grafana) nur auf diesem Rechner.
+if test (hostname) = archbtw
+    function c --wraps=opencode --description 'opencode mit lokalem Telemetrie-Stack'
+        systemctl --user start opencode-otel.service opencode-prometheus.service opencode-grafana.service
+        opencode $argv
+    end
+end
